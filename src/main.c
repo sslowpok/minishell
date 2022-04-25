@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
+/*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/04/25 15:40:41 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/04/25 18:20:33 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,16 +32,41 @@ void	init_info(t_info *info, char **envp)
 	info->status = 0;
 }
 
+/*
+Source: https://web.mit.edu/gnu/doc/html/rlman_2.html
+*/
+/* 
+1) Get a line from the user. 
+2) If the line has any text in it, save it on the history.
+3) Return line.
+*/
+char	*ft_readline(void)
+{
+	char	*line_read;
+
+	line_read = readline("💀 > ");
+	if (!line_read)
+		exit(EXIT_FAILURE);
+	if (line_read && *line_read)
+	    add_history (line_read);
+	return(line_read);
+}
+
 int	main(int argc, char __unused **argv, char __unused **envp)
 {
 	t_info	info;
+	char	*line;
 
 	if (argc != 1)
 	{
 		return (1);
 	}
-	
 	init_info(&info, envp);
-	
+	while (1)
+	{
+		line = ft_readline();
+	//	Do smth
+		free(line);
+	}
 	return (0);
 }

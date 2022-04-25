@@ -25,6 +25,9 @@ OBJ		=	$(addprefix $(OBJ_DIR), $(notdir $(OBJ_LIST)))
 HEADERS	=	$(addprefix $(INC_DIR), $(HEADERS_LIST))
 LIBFT	=	$(addprefix $(LIBFT_DIR), libft.a)
 
+RL_INCLUDE  =   ~/.brew/opt/readline/include
+RL_LIB      =   ~/.brew/opt/readline/lib
+
 .PHONY:	all clean fclean re
 
 all:	$(LIBFT) $(NAME)
@@ -36,7 +39,7 @@ $(OBJ_DIR)%.o:	$(SRC_DIR)%.c $(HEADERS) | $(OBJ_DIR)
 		$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME):	$(OBJ)
-		$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -o $(NAME)
+		$(CC) $(CFLAGS) -lreadline -L $(RL_LIB) -I $(RL_INCLUDE) $(OBJ) $(LIBFT) -o $(NAME)
 
 $(OBJ_DIR):
 		@mkdir $(OBJ_DIR)
