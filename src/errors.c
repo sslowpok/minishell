@@ -1,25 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   errors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/04/25 15:17:19 by sslowpok         ###   ########.fr       */
+/*   Created: 2022/03/15 16:47:11 by sslowpok          #+#    #+#             */
+/*   Updated: 2022/04/25 15:16:34 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../includes/error.h"
+#include "../includes/pipex_bonus.h"
 
-int	main(int __unused argc, char __unused **argv, char __unused **envp)
+void	error(int code, char *text)
 {
-	// if (argc != 1)
-	// {
-	// 	return (1);
-	// }
+	if (code == -1)
+	{
+		write(2, text, ft_strlen(text));
+		write(2, " command not found\n", 20);
+		exit (1);
+	}
+	perror(text);
+	exit (1);
+}
 
-	pipex(argc, argv, envp);
-	
-	return (0);
+void	inp_error(void)
+{
+	ft_putendl_fd("Invalid input.", 2);
+	exit(1);
 }

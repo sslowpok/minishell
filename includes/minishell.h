@@ -10,6 +10,7 @@
 
 # include "../libft/libft.h"
 
+void	pipex(int argc, char **argv, char **envp);
 
 
 #endif

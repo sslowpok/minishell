@@ -10,6 +10,11 @@ INC_DIR	=	./includes/
 LIBFT_DIR	=	./libft/
 
 SRC_LIST	=	main.c \
+				cmd.c \
+				errors.c \
+				main_pipex.c \
+				paths.c \
+				utils.c
 
 OBJ_LIST	=	$(SRC:%.c=%.o)
 
