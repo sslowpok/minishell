@@ -6,15 +6,17 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/04/23 14:29:25 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/04/25 14:06:34 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	main(void)
+int	main(int argc, char **argv, char **envp)
 {
-	write(1, "Hello\n", 6);
-	write(1, "slow\n", 5);
+	if (argc != 1)
+	{
+		return (1);
+	}
 	return (0);
 }
