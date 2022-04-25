@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/04/25 15:39:15 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/04/25 15:40:41 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ void	init_info(t_info *info, char **envp)
 	info->exit_f = 0;
 	info->status = 0;
 }
-
 
 int	main(int argc, char __unused **argv, char __unused **envp)
 {
