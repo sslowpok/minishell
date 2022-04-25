@@ -1,0 +1,240 @@
+
+1) readline
+The function readline () prints a prompt and then reads and returns a single line of text from the user. 
+The line readline returns is allocated with malloc (); you should free () the line when you are done with it.
+https://web.mit.edu/gnu/doc/html/rlman_2.html
+
+2) rl_clear_history
+void rl_clear_history (void)
+Clear the history list by deleting all of the entries, in the same manner as the History library's clear_history() function. 
+This differs from clear_history because it frees private data Readline saves in the history list.
+https://tiswww.case.edu/php/chet/readline/readline.html
+
+3) rl_on_new_line
+int rl_on_new_line (void)
+Tell the update functions that we have moved onto a new (empty) line, usually after outputting a newline.
+https://tiswww.case.edu/php/chet/readline/readline.html
+
+4) rl_replace_line
+void rl_replace_line (const char *text, int clear_undo)
+Replace the contents of rl_line_buffer with text. 
+The point and mark are preserved, if possible. If clear_undo is non-zero, the undo list associated with the current line is cleared.
+https://tiswww.case.edu/php/chet/readline/readline.html
+
+5) rl_redisplay
+void rl_redisplay (void)
+Change what's displayed on the screen to reflect the current contents of rl_line_buffer.
+https://tiswww.case.edu/php/chet/readline/readline.html
+
+
+6) add_history
+If you want the user to be able to get at the line later, (with C-p for example), you must call add_history () to save the line away in a history list of such lines.
+https://web.mit.edu/gnu/doc/html/rlman_2.html
+
+7) printf
+
+8) malloc 
+
+9) free 
+
+10) write 
+
+11) access
+int    access(const char *path, int mode);
+man access
+#include <unistd.h>
+
+The access() system call checks the accessibility of the file named by the path argument for the access permissions indicated by the mode argument.
+The value of mode is either the bitwise-inclusive OR of the access permissions to be checked 
+(R_OK for read permission, W_OK for write permission, and X_OK for execute/search permission), 
+or the existence test (F_OK).
+
+RETURN VALUES
+     Upon successful completion, the value 0 is returned; otherwise the
+     value -1 is returned and the global variable errno is set to indicate the
+     error.
+
+12) open
+man 2 open
+#include <fcntl.h>
+int open(const char *path, int oflag, ...);
+
+13) read
+man 2 read
+#include <unistd.h>
+ssize_t read(int fildes, void *buf, size_t nbyte);
+
+14) close
+man 2 close
+#include <unistd.h>
+int    close(int fildes);
+
+15) fork
+fork() causes creation of a new process.
+man sslowpok
+
+16) wait
+man 2 wait OR man sslowpok
+#include <sys/wait.h>
+
+17) waitpid
+
+18) wait3
+
+19) wait4
+
+20) signal
+#include <signal.h>
+void (*signal(int sig, void (*func)(int)))(int);
+
+21) sigaction
+
+22) sigemptyset
+
+23) sigaddset
+
+24) kill
+
+25) exit
+
+26) getcwd - to use in pwd function (just print buf, returned by getcwd)
+#include <unistd.h>
+char *getcwd(char *buf, size_t size);
+The getcwd() function copies the absolute pathname of the current working directory into the memory refer-
+     enced by buf and returns a pointer to buf.  The size argument is the size, in bytes, of the array refer-
+     enced by buf.
+Upon successful completion, a pointer to the pathname is returned.  Otherwise a NULL pointer is returned
+     and the global variable errno is set to indicate the error.
+
+
+27) chdir - useful in executing cd function
+man 2 chdir
+#include <unistd.h>
+int chdir(const char *path);
+The path argument points to the pathname of a directory.  The chdir() function causes the named directory
+     to become the current working directory, that is, the starting point for path searches of pathnames not
+     beginning with a slash, `/'.
+Upon successful completion, a value of 0 is returned.  Otherwise, a value of -1 is returned and errno is
+     set to indicate the error.
+
+28) stat
+man 2 stat
+#include <sys/stat.h>
+int stat(const char *restrict path, struct stat *restrict buf);
+The stat() function obtains information about the file pointed to by path.  Read, write or execute permis-
+     sion of the named file is not required, but all directories listed in the path name leading to the file
+     must be searchable.
+
+29) lstat
+man 2 lstat
+#include <sys/stat.h>
+int lstat(const char *restrict path, struct stat *restrict buf);
+The lstat() function is like stat() except in the case where the named file is a symbolic link; lstat()
+     returns information about the link, while stat() returns information about the file the link references.
+
+
+30) fstat
+int fstat(int fildes, struct stat *buf);
+The fstat() obtains the same information about an open file known by the file descriptor fildes.
+
+31) unlink
+The unlink() function removes the link named by path from its directory and decrements the link count of
+     the file which was referenced by the link.
+     
+32) execve,
+
+33) dup 
+
+34) dup2
+
+35) pipe 
+
+36) opendir
+#include <dirent.h>
+DIR *opendir(const char *filename);
+The opendir() function opens the directory named by filename, associates a directory stream with it and
+     returns a pointer to be used to identify the directory stream in subsequent operations.  The pointer NULL
+     is returned if filename cannot be accessed, or if it cannot malloc(3) enough memory to hold the whole
+     thing, and sets the global variable errno to indicate the error.
+
+37) readdir
+The readdir() function returns a pointer to the next directory entry.
+
+38) closedir
+The closedir() function closes the named directory stream and frees the structure associated with the dirp
+     pointer, returning 0 on success.  On failure, -1 is returned and the global variable errno is set to indi-
+     cate the error.
+
+39) strerror 
+
+40) perror
+
+41) isatty
+#include <unistd.h>
+int isatty(int fd)
+The isatty() function determines if the file descriptor fd refers to a valid terminal type device.
+
+42) ttyname
+char *ttyname(int fd);
+The ttyname() function gets the related device name of a file descriptor for which isatty() is true.
+
+43) ttyslot
+#include <unistd.h>
+int ttyslot(void);
+ttyslot - find the slot of the current user's terminal in some file
+
+44) ioctl
+#include <sys/ioctl.h>
+int ioctl(int fildes, unsigned long request, ...);
+The ioctl() function manipulates the underlying device parameters of special files.  In particular, many
+     operating characteristics of character special files (e.g. terminals) may be controlled with ioctl()
+     requests.  The argument fildes must be an open file descriptor.
+
+45) getenv
+#include <stdlib.h>
+char *getenv(const char *name);
+The getenv() function obtains the current value of the environment variable, name.  The application should
+     not modify the string pointed to by the getenv() function.
+
+46) tcsetattr
+#include <termios.h>
+int tcsetattr(int fildes, int optional_actions, const struct termios *termios_p);
+The tcsetattr() function sets the parameters associated with the terminal from the termios structure ref-
+     erenced by termios_p.  The optional_actions field is created by or'ing the following values, as specified
+     in the include file <termios.h>.
+
+47) tcgetattr
+The tcgetattr() function copies the parameters associated with the terminal referenced by fildes in the
+     termios structure referenced by termios_p.  This function is allowed from a background process; however,
+     the terminal attributes may be subsequently changed by a foreground process.
+     
+48) tgetent
+ #include <curses.h>
+ #include <term.h>
+int tgetent(char *bp, const char *name);
+The tgetent routine loads the entry for name.  It returns 1 on success, 0 if there is no such entry, and
+       -1 if the terminfo database could not be found.  The emulation ignores the buffer pointer bp.
+
+49) tgetflag
+int tgetflag(char *id);
+The tgetflag routine gets the boolean entry for id, or zero if it is not available.
+
+50) tgetnum,
+int tgetnum(char *id);
+The tgetnum routine gets the numeric entry for id, or -1 if it is not available.
+
+51) tgetstr
+char *tgetstr(char *id, char **area);
+The  tgetstr routine returns the string entry for id, or zero if it is not available.  Use tputs to out-
+       put the returned string.  The return value will also be copied to the buffer pointed to by area, and the
+       area value will be updated to point past the null ending this value.
+
+52) tgoto
+char *tgoto(const char *cap, int col, int row);
+The tgoto routine instantiates the parameters into the given capability.  The output from  this  routine
+       is to be passed to tputs.
+
+53) tputs
+int tputs(const char *str, int affcnt, int (*putc)(int));
+The  tputs  routine  is described on the curs_terminfo(3X) manual page.  It can retrieve capabilities by
+       either termcap or terminfo name.
