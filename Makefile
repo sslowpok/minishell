@@ -14,7 +14,8 @@ SRC_LIST	=	main.c \
 				errors.c \
 				main_pipex.c \
 				paths.c \
-				utils.c
+				utils.c \
+				lexer.c
 
 OBJ_LIST	=	$(SRC:%.c=%.o)
 
@@ -38,7 +39,7 @@ $(LIBFT):
 $(OBJ_DIR)%.o:	$(SRC_DIR)%.c $(HEADERS) | $(OBJ_DIR)
 		$(CC) $(CFLAGS) -c $< -o $@
 
-$(NAME):	$(OBJ)
+$(NAME):	$(OBJ) Makefile
 		$(CC) $(CFLAGS) -lreadline -L $(RL_LIB) -I $(RL_INCLUDE) $(OBJ) $(LIBFT) -o $(NAME)
 
 $(OBJ_DIR):

@@ -24,7 +24,6 @@ typedef struct s_info
 
 	char	*reserved_words[7];
 	char	**envp;
-
 	// maybe needed ptr
 	t_llist	envp_list;
 	int		envp_f;
@@ -32,6 +31,21 @@ typedef struct s_info
 	int		status;
 }		t_info;
 
+typedef struct s_file_info
+{
+	int		redirect_type;
+	char	*file_name;
+}	t_file_info;
+
+typedef struct s_block_process
+{
+	char				**argv;
+	struct file_info	*files;
+	int					files_count;
+}	t_block_process;
+
 void	pipex(int argc, char **argv, char **envp);
+
+int		ft_lexer(char *line);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/04/25 18:20:33 by coverand         ###   ########.fr       */
+/*   Updated: 2022/04/26 18:40:21 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ char	*ft_readline(void)
 	if (!line_read)
 		exit(EXIT_FAILURE);
 	if (line_read && *line_read)
-	    add_history (line_read);
-	return(line_read);
+		add_history (line_read);
+	return (line_read);
 }
 
 int	main(int argc, char __unused **argv, char __unused **envp)
@@ -65,7 +65,8 @@ int	main(int argc, char __unused **argv, char __unused **envp)
 	while (1)
 	{
 		line = ft_readline();
-	//	Do smth
+		if (ft_lexer(line))
+			return (1);
 		free(line);
 	}
 	return (0);
