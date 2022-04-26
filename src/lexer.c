@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 18:21:08 by coverand          #+#    #+#             */
-/*   Updated: 2022/04/26 19:53:23 by coverand         ###   ########.fr       */
+/*   Updated: 2022/04/26 20:23:08 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,14 +111,25 @@ char	*ft_strtok(char *str, const char delim)
 int	ft_lexer(char *line)
 {
 	char	*token;
+	t_list	*lexems;
 
+	lexems = NULL;
 	if (ft_check_quotes(line))
 		return (1);
 	token = ft_strtok(line, ' ');
 	while (token != NULL)
 	{
-		printf("%s\n", token);
+		if (!lexems)
+			lexems = ft_lstnew((void *)token);
+		else
+			ft_lstadd_back(&lexems, ft_lstnew((void *)token));
+		//printf("%s\n", token);
 		token = ft_strtok(NULL, ' ');
+	}
+	while (lexems)
+	{
+		printf("%s\n", (char *)lexems->content);
+		lexems = lexems->next;
 	}
 	return (0);
 }

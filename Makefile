@@ -34,7 +34,7 @@ RL_LIB      =   ~/.brew/opt/readline/lib
 all:	$(LIBFT) $(NAME)
 
 $(LIBFT):
-		make -C ./libft/
+		make bonus -C ./libft/
 
 $(OBJ_DIR)%.o:	$(SRC_DIR)%.c $(HEADERS) | $(OBJ_DIR)
 		$(CC) $(CFLAGS) -c $< -o $@
@@ -47,6 +47,7 @@ $(OBJ_DIR):
 
 clean:
 		@$(RM) $(OBJ_DIR)
+		make clean -C ./libft/
 
 fclean:	clean
 		@$(RM) $(NAME) $(LIBFT)
