@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/04/26 20:19:04 by coverand         ###   ########.fr       */
+/*   Updated: 2022/04/27 14:04:51 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,11 @@ int	main(int argc, char __unused **argv, char __unused **envp)
 {
 	t_info	info;
 	char	*line;
+	t_list	*lexems;
+	t_list	*bp; // list with block_processes. Each element of bp has structure t_block_process as content
 
+	bp = NULL;
+	lexems = NULL;
 	if (argc != 1)
 	{
 		return (1);
@@ -65,8 +69,13 @@ int	main(int argc, char __unused **argv, char __unused **envp)
 	while (1)
 	{
 		line = ft_readline();
-		if (ft_lexer(line))
+		if (ft_lexer(line, &lexems))
 			return (1);
+		while (lexems)
+		{
+			printf("%s\n", (char *)lexems->content);
+			lexems = lexems->next;
+		}
 		free(line);
 	}
 	return (0);

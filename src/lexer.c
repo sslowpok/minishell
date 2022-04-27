@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 18:21:08 by coverand          #+#    #+#             */
-/*   Updated: 2022/04/26 20:23:08 by coverand         ###   ########.fr       */
+/*   Updated: 2022/04/27 14:02:41 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ char	*ft_strtok(char *str, const char delim)
 1) Check that each outer open quote has corresponding closing quote.
 2) Get tokens (lexems).
 */
-int	ft_lexer(char *line)
+int	ft_lexer(char *line, t_list **lex)
 {
 	char	*token;
 	t_list	*lexems;
@@ -123,13 +123,8 @@ int	ft_lexer(char *line)
 			lexems = ft_lstnew((void *)token);
 		else
 			ft_lstadd_back(&lexems, ft_lstnew((void *)token));
-		//printf("%s\n", token);
 		token = ft_strtok(NULL, ' ');
 	}
-	while (lexems)
-	{
-		printf("%s\n", (char *)lexems->content);
-		lexems = lexems->next;
-	}
+	*lex = lexems;
 	return (0);
 }
