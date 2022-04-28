@@ -47,6 +47,6 @@ typedef struct s_block_process
 void	pipex(int argc, char **argv, char **envp);
 
 int		ft_lexer(char *line, t_list **lex);
-int		ft_lexeme_to_bp(t_list **bp);
+int		ft_lexeme_to_bp(t_list **bp, t_list **lexemes);
 
 #endif
