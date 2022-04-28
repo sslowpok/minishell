@@ -8,7 +8,6 @@
 # include <readline/history.h>
 
 # include "../libft/libft.h"
-# include "parser.h"
 
 // typedef int(*t_builtin_ptr)(t_list*, t_info*);
 

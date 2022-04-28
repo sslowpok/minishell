@@ -6,11 +6,12 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/04/28 19:18:49 by coverand         ###   ########.fr       */
+/*   Updated: 2022/04/28 19:55:03 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+#include "../includes/parser.h"
 
 void	init_res_words(t_info *info)
 {
@@ -84,18 +85,19 @@ int	main(int argc, char __unused **argv, char __unused **envp)
 			int	i;
 			i = 0;
 			t_block_process	*block = (t_block_process *)tmp->content;
-			/*while (block->argv[i])
+			while (block->argv[i])
 			{
 				printf("%i) %s\n", i, block->argv[i]);
 				i++;
-			}*/
-			while (i < block->files_count)
+			}
+			/*while (i < block->files_count)
 			{
 				printf("redir: %i, file: %s\n", block->files[i].redirect_type, block->files[i].file_name);
 				i++;
-			}
+			}*/
 			tmp = tmp->next;
 		}
+		ft_free_block_process(&bp);
 		free(line);
 	}
 	return (0);

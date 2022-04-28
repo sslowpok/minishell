@@ -18,7 +18,8 @@ SRC_LIST	=	main.c \
 				parser_lexer.c \
 				parser_lexemes_to_bp.c \
 				parser_utils1.c \
-				parser_redir_utils.c
+				parser_redir_utils.c \
+				parser_block_process_clear.c
 
 OBJ_LIST	=	$(SRC:%.c=%.o)
 

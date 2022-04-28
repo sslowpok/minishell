@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 18:42:57 by coverand          #+#    #+#             */
-/*   Updated: 2022/04/28 19:05:09 by coverand         ###   ########.fr       */
+/*   Updated: 2022/04/28 19:52:19 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,5 +28,9 @@ int		ft_is_redirect(char	*str);
 /*File parser_utils1.c*/
 char	*ft_pop_front(t_list **head);
 void	ft_delete_list(t_list **head);
+
+/*File parser_block_process_clear.c*/
+void	ft_free_struct_bp(t_block_process *bp);
+void	ft_free_block_process(t_list **head);
 
 #endif
