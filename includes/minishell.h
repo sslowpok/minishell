@@ -8,6 +8,7 @@
 # include <readline/history.h>
 
 # include "../libft/libft.h"
+# include "parser.h"
 
 // typedef int(*t_builtin_ptr)(t_list*, t_info*);
 
@@ -39,15 +40,12 @@ typedef struct s_file_info
 
 typedef struct s_block_process
 {
-	char				**argv;
-	struct file_info	*files;
-	int					files_count;
-	int					argc;
+	char		**argv;
+	t_file_info	*files;
+	int			files_count;
+	int			argc;
 }	t_block_process;
 
 void	pipex(int argc, char **argv, char **envp);
-
-int		ft_lexer(char *line, t_list **lex);
-int		ft_lexeme_to_bp(t_list **bp, t_list **lexemes);
 
 #endif

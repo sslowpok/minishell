@@ -15,8 +15,10 @@ SRC_LIST	=	main.c \
 				main_pipex.c \
 				paths.c \
 				utils.c \
-				lexer.c \
-				lexemes_to_bp.c
+				parser_lexer.c \
+				parser_lexemes_to_bp.c \
+				parser_utils1.c \
+				parser_redir_utils.c
 
 OBJ_LIST	=	$(SRC:%.c=%.o)
 
