@@ -6,13 +6,12 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 13:39:49 by coverand          #+#    #+#             */
-/*   Updated: 2022/04/28 18:00:13 by coverand         ###   ########.fr       */
+/*   Updated: 2022/04/28 18:25:01 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include "../libft/libft.h"
-
 
 char	*ft_pop_front(t_list **head)
 {
@@ -90,8 +89,8 @@ void	ft_fill_argv_in_bp(char **argv, t_list **cmd, int num)
 
 void	ft_delete_list(t_list **head)
 {
-	t_list*	prev;
-	
+	t_list	*prev;
+
 	prev = NULL;
 	while ((*head)->next)
 	{
@@ -99,6 +98,7 @@ void	ft_delete_list(t_list **head)
 		(*head) = (*head)->next;
 		free(prev);
 	}
+	*head = NULL;
 	free(*head);
 }
 
@@ -121,14 +121,6 @@ t_block_process	*ft_create_bp(t_list **cmd)
 	return (block);
 }
 
-/*
-for lexeme in lexemes:														//	функция в которой мы трансформируем список лексем
-	if (lexeme != '|')														//	в структуру блока процессов
-		lexemes_for_block_process.push_back(lexeme)							//	заполняем список блока процсса лексемами
-	else:																	//
-		block_processes.push_back(create(lexemes_for_block_process));		//иначе переходим в функцию трансформации списка (create(list<lexeme>))лексем в block_process и пушим в с конец списка блоков процесса
-		lexemes_for_block_process = empty;									//и очищаем список
-*/
 int	ft_lexeme_to_bp(t_list __unused **bp, t_list **lexemes)
 {
 	t_list	*lex;
@@ -152,19 +144,13 @@ int	ft_lexeme_to_bp(t_list __unused **bp, t_list **lexemes)
 				cmd = ft_lstnew((void *)ft_pop_front(&lex));
 			else
 				ft_lstadd_back(&cmd, ft_lstnew((void *)ft_pop_front(&lex)));
-		}
-		t_list	*tmp = *bp;
-		while (tmp)
-		{
-			int	i;
-			i = 0;
-			t_block_process	*block = (t_block_process *)tmp->content;
-			while (block->argv[i])
+			if (!lex)
 			{
-				printf("%i) %s\n", i, block->argv[i]);
-				i++;
+				if (!(*bp))
+					*bp = ft_lstnew((void *)ft_create_bp(&cmd));
+				else
+					ft_lstadd_back(bp, ft_lstnew((void *)ft_create_bp(&cmd)));
 			}
-			tmp = tmp->next;
 		}
 	}
 	return (0);

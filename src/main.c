@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/04/28 15:35:49 by coverand         ###   ########.fr       */
+/*   Updated: 2022/04/28 18:25:55 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,20 @@ int	main(int argc, char __unused **argv, char __unused **envp)
 			lexems = lexems->next;
 		}*/
 		ft_lexeme_to_bp(&bp, &lexems);
+		t_list	*tmp = bp;
+		printf("size: %i\n", ft_lstsize(tmp));
+		while (tmp)
+		{
+			int	i;
+			i = 0;
+			t_block_process	*block = (t_block_process *)tmp->content;
+			while (block->argv[i])
+			{
+				printf("%i) %s\n", i, block->argv[i]);
+				i++;
+			}
+			tmp = tmp->next;
+		}
 		free(line);
 	}
 	return (0);
