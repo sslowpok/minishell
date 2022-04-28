@@ -42,6 +42,7 @@ typedef struct s_block_process
 	char				**argv;
 	struct file_info	*files;
 	int					files_count;
+	int					argc;
 }	t_block_process;
 
 void	pipex(int argc, char **argv, char **envp);
