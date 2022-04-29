@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 16:54:49 by coverand          #+#    #+#             */
-/*   Updated: 2022/04/29 17:43:55 by coverand         ###   ########.fr       */
+/*   Updated: 2022/04/29 17:50:55 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,4 +41,23 @@ void	ft_remove_elem_envp(t_llist **envp_list, char *key)
 		return ;
 	prev->next = curr->next;
 	free(curr);
+}
+
+char	*ft_get_value_envp(t_llist **envp_list, char *key)
+{
+	char	*ans;
+	t_llist	*tmp;
+
+	ans = NULL;
+	tmp = *envp_list;
+	while (tmp)
+	{
+		if (ft_strcmp(tmp->key, key) == 0)
+		{
+			ans = ft_strdup(tmp->value);
+			return (ans);
+		}
+		tmp = tmp->next;
+	}
+	return (ans);
 }
