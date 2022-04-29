@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/04/29 16:49:22 by coverand         ###   ########.fr       */
+/*   Updated: 2022/04/29 17:17:43 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,8 @@ int	main(int argc, char __unused **argv, char __unused **envp)
 		return (1);
 	}
 	init_info(&info, envp);
+	ft_remove_elem_envp(&info.envp_list, "USER");
+	ft_remove_elem_envp(&info.envp_list, "SHLVL");
 	while (info.envp_list)
 	{
 		printf("%s=%s\n", info.envp_list->key, info.envp_list->value);
