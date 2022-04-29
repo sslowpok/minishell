@@ -13,19 +13,18 @@
 
 typedef struct s_llist
 {
-	void			*key;
-	void			*value;
+	char			*key;
+	char			*value;
 	struct s_llist	*next;
 
-}			t_llist;
+}	t_llist;
 
 typedef struct s_info
 {
-
 	char	*reserved_words[7];
 	char	**envp;
 	// maybe needed ptr
-	t_llist	envp_list;
+	t_llist	*envp_list;
 	int		envp_f;
 	int		exit_f;
 	int		status;
