@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 17:55:09 by coverand          #+#    #+#             */
-/*   Updated: 2022/04/30 17:30:40 by coverand         ###   ########.fr       */
+/*   Updated: 2022/04/30 17:51:46 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,10 @@ int	ft_print_parse_error(char __unused *msg)
 
 int	ft_check_pipe(t_list *lexemes)
 {
-	printf("%s\n", (const char *)lexemes->content);
-/*	if (ft_strcmp((const char *)lexemes->content, "|") == 0 && ft_strcmp((const char *)lexemes->next->content, "|") == 0)
-		return (ft_print_parse_error(PARSER_ERR_PIPE));*/
+	if (!ft_strcmp((const char *)lexemes->content, "|") && !lexemes->next)
+		return (ft_print_parse_error(PARSER_ERR_PIPE));
+	if (ft_strcmp((const char *)lexemes->content, "|") == 0 && \
+	ft_strcmp((const char *)lexemes->next->content, "|") == 0)
+		return (ft_print_parse_error(PARSER_ERR_PIPE));
 	return (0);
 }

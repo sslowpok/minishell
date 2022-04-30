@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 13:39:49 by coverand          #+#    #+#             */
-/*   Updated: 2022/04/30 17:30:40 by coverand         ###   ########.fr       */
+/*   Updated: 2022/04/30 17:51:34 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,8 @@ t_block_process	*ft_create_bp(t_list **cmd)
 
 int	ft_create_bp_list(t_list **bp, t_list **cmd)
 {
+	if (!(*bp) && !(*cmd))
+		return (ft_print_parse_error(PARSER_ERR_PIPE));
 	if (!(*bp))
 	{
 		*bp = ft_lstnew((void *)ft_create_bp(cmd));
@@ -106,16 +108,11 @@ int	ft_lexeme_to_bp(t_list **bp, t_list **lexemes)
 		// if lex is | and lex->next is redirect
 		// if lex is | and lex->next is |
 	//	printf("%s\n", (const char *)lex->content);
-		/*if (ft_check_pipe(lex))
-		{
-			printf("Ooooh noooo\n");
-			exit(EXIT_FAILURE);
-		}*/
+		if (ft_check_pipe(lex))
+			return (1);
 		if (!ft_strncmp((const char *)lex->content, "|", 2))
 		{
 			ft_pop_front(&lex);
-			if (!*bp && !cmd)
-				return(ft_print_parse_error(PARSER_ERR_PIPE));
 			if (ft_create_bp_list(bp, &cmd))
 				return (1);
 			/*printf("The end\n");
