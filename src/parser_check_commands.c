@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 17:55:09 by coverand          #+#    #+#             */
-/*   Updated: 2022/04/30 17:51:46 by coverand         ###   ########.fr       */
+/*   Updated: 2022/04/30 18:24:28 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,28 @@ int	ft_print_parse_error(char __unused *msg)
 	return (1);
 }
 
+/*
+Errors:
+1) if lex is '|' and there is no lex->next
+2) if lex is '|' and lex->next is '|'
+3) if lex is redirect and lex->next is '|'
+4) if lex is '|' and lex->next is redirect
+*/
 int	ft_check_pipe(t_list *lexemes)
 {
 	if (!ft_strcmp((const char *)lexemes->content, "|") && !lexemes->next)
 		return (ft_print_parse_error(PARSER_ERR_PIPE));
-	if (ft_strcmp((const char *)lexemes->content, "|") == 0 && \
-	ft_strcmp((const char *)lexemes->next->content, "|") == 0)
-		return (ft_print_parse_error(PARSER_ERR_PIPE));
+	if (lexemes->next)
+	{
+		if (ft_strcmp((const char *)lexemes->content, "|") == 0 && \
+		ft_strcmp((const char *)lexemes->next->content, "|") == 0)
+			return (ft_print_parse_error(PARSER_ERR_PIPE));
+		if (ft_is_redirect((char *)lexemes->content) != -1 && \
+		!ft_strcmp((const char *)lexemes->next->content, "|"))
+			return (ft_print_parse_error(PARSER_ERR_PIPE));
+		if (ft_is_redirect((char *)lexemes->next->content) != -1 && \
+		!ft_strcmp((const char *)lexemes->content, "|"))
+			return (ft_print_parse_error(PARSER_ERR_PIPE));
+	}
 	return (0);
 }

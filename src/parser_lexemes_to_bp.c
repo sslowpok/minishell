@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 13:39:49 by coverand          #+#    #+#             */
-/*   Updated: 2022/04/30 17:51:34 by coverand         ###   ########.fr       */
+/*   Updated: 2022/04/30 18:15:25 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,8 @@ void	ft_fill_redirect_info(t_block_process *block, t_list **cmd)
 		redir = ft_is_redirect((char *)tmp->content);
 		if (redir != -1)
 		{
-			files[i].file_name = (char *)tmp->next->content;
+			if (tmp->next)
+				files[i].file_name = (char *)tmp->next->content;
 			files[i].redirect_type = redir;
 			i++;
 		}
