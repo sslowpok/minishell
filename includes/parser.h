@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 18:42:57 by coverand          #+#    #+#             */
-/*   Updated: 2022/04/30 17:51:53 by coverand         ###   ########.fr       */
+/*   Updated: 2022/04/30 18:40:47 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ void	ft_free_block_process(t_list **head);
 
 /*FIle parser_check_commands.c*/
 int		ft_print_parse_error(char *msg);
-int		ft_check_pipe(t_list *lexemes);
+int		ft_check_pipe_error(t_list *lexemes);
+int		ft_check_redirect_error(t_list **cmd);
 
 #endif

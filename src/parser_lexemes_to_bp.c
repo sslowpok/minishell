@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 13:39:49 by coverand          #+#    #+#             */
-/*   Updated: 2022/04/30 18:15:25 by coverand         ###   ########.fr       */
+/*   Updated: 2022/04/30 18:52:23 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ int	ft_create_bp_list(t_list **bp, t_list **cmd)
 {
 	if (!(*bp) && !(*cmd))
 		return (ft_print_parse_error(PARSER_ERR_PIPE));
+	if (ft_check_redirect_error(cmd))
+		return (1);
 	if (!(*bp))
 	{
 		*bp = ft_lstnew((void *)ft_create_bp(cmd));
@@ -109,7 +111,7 @@ int	ft_lexeme_to_bp(t_list **bp, t_list **lexemes)
 		// if lex is | and lex->next is redirect
 		// if lex is | and lex->next is |
 	//	printf("%s\n", (const char *)lex->content);
-		if (ft_check_pipe(lex))
+		if (ft_check_pipe_error(lex))
 			return (1);
 		if (!ft_strncmp((const char *)lex->content, "|", 2))
 		{
