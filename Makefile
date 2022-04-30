@@ -21,7 +21,8 @@ SRC_LIST	=	main.c \
 				parser_redir_utils.c \
 				parser_block_process_clear.c \
 				envp_parser_utils.c \
-				envp_list_utils.c
+				envp_list_utils.c \
+				parser_check_commands.c
 
 OBJ_LIST	=	$(SRC:%.c=%.o)
 

@@ -6,9 +6,12 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 17:55:09 by coverand          #+#    #+#             */
-/*   Updated: 2022/04/30 16:51:06 by coverand         ###   ########.fr       */
+/*   Updated: 2022/04/30 17:30:40 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "../includes/parser.h"
+#include "../includes/minishell.h"
 
 /*
 Error management:
@@ -32,3 +35,18 @@ bash: syntax error near unexpected token '"
 bash: export: `=': not a valid identifier
 bash: export: `5': not a valid identifier
 */
+
+int	ft_print_parse_error(char __unused *msg)
+{
+	printf(MINISHELL);
+	printf("%s", msg);
+	return (1);
+}
+
+int	ft_check_pipe(t_list *lexemes)
+{
+	printf("%s\n", (const char *)lexemes->content);
+/*	if (ft_strcmp((const char *)lexemes->content, "|") == 0 && ft_strcmp((const char *)lexemes->next->content, "|") == 0)
+		return (ft_print_parse_error(PARSER_ERR_PIPE));*/
+	return (0);
+}

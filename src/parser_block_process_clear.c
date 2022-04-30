@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 19:49:22 by coverand          #+#    #+#             */
-/*   Updated: 2022/04/28 19:49:57 by coverand         ###   ########.fr       */
+/*   Updated: 2022/04/30 17:32:35 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ void	ft_free_block_process(t_list **head)
 	t_list	*prev;
 
 	prev = NULL;
+	if (!*head)
+		return ;
 	while ((*head)->next)
 	{
 		prev = (*head);

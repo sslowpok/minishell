@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 13:39:49 by coverand          #+#    #+#             */
-/*   Updated: 2022/04/28 19:15:52 by coverand         ###   ########.fr       */
+/*   Updated: 2022/04/30 17:30:40 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,11 +101,25 @@ int	ft_lexeme_to_bp(t_list **bp, t_list **lexemes)
 	cmd = NULL;
 	while (lex)
 	{
+		// check: if lex is redirect and lex->next is |
+		// if lex is | and there is no lex->next
+		// if lex is | and lex->next is redirect
+		// if lex is | and lex->next is |
+	//	printf("%s\n", (const char *)lex->content);
+		/*if (ft_check_pipe(lex))
+		{
+			printf("Ooooh noooo\n");
+			exit(EXIT_FAILURE);
+		}*/
 		if (!ft_strncmp((const char *)lex->content, "|", 2))
 		{
 			ft_pop_front(&lex);
+			if (!*bp && !cmd)
+				return(ft_print_parse_error(PARSER_ERR_PIPE));
 			if (ft_create_bp_list(bp, &cmd))
 				return (1);
+			/*printf("The end\n");
+			exit(EXIT_FAILURE);*/
 		}
 		else
 		{

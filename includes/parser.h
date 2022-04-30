@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 18:42:57 by coverand          #+#    #+#             */
-/*   Updated: 2022/04/30 16:53:37 by coverand         ###   ########.fr       */
+/*   Updated: 2022/04/30 17:27:30 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,14 @@
 
 # define MINISHELL  "minishell: "
 /*Defining parser error messages*/
-# define PARSER_ERR_IN      "syntax error near unexpected token `>'"
-# define PARSER_ERR_OUT     "syntax error near unexpected token `<'"
-# define PARSER_ERR_IN_APP  "syntax error near unexpected token `>>'"
-# define PARSER_ERR_HEREDOC "syntax error near unexpected token `<<'"
-# define PARSER_ERR_PIPE    "syntax error near unexpected token `|'"
-# define PARSER_ERR_LAST    "syntax error near unexpected token `newline'"
-# define ERR_SINGLE_QUOTES  "unmatched single quotes"
-# define ERR_DOUBLE_QUOTES  "unmatched double quotes"
+# define PARSER_ERR_IN      "syntax error near unexpected token `>'\n"
+# define PARSER_ERR_OUT     "syntax error near unexpected token `<'\n"
+# define PARSER_ERR_IN_APP  "syntax error near unexpected token `>>'\n"
+# define PARSER_ERR_HEREDOC "syntax error near unexpected token `<<'\n"
+# define PARSER_ERR_PIPE    "syntax error near unexpected token `|'\n"
+# define PARSER_ERR_LAST    "syntax error near unexpected token `newline'\n"
+# define ERR_SINGLE_QUOTES  "unmatched single quotes\n"
+# define ERR_DOUBLE_QUOTES  "unmatched double quotes\n"
 
 /*File parser_lexer.c*/
 int		ft_lexer(char *line, t_list **lex);
@@ -43,5 +43,9 @@ void	ft_delete_list(t_list **head);
 /*File parser_block_process_clear.c*/
 void	ft_free_struct_bp(t_block_process *bp);
 void	ft_free_block_process(t_list **head);
+
+/*FIle parser_check_commands.c*/
+int		ft_print_parse_error(char *msg);
+int		ft_check_pipe(t_list *lexemes);
 
 #endif
