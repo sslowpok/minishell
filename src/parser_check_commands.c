@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 17:55:09 by coverand          #+#    #+#             */
-/*   Updated: 2022/04/30 18:52:17 by coverand         ###   ########.fr       */
+/*   Updated: 2022/04/30 18:55:59 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,9 @@ int	ft_check_pipe_error(t_list *lexemes)
 	return (0);
 }
 
+/*
+>(0) >>(1) <(2) <<(3)
+*/
 int	ft_check_redirect_error_help(int first, int second)
 {
 	if (first != -1 && second == 0)
@@ -83,7 +86,9 @@ int	ft_check_redirect_error_help(int first, int second)
 }
 
 /*
->(0) >>(1) <(2) <<(3)
+Errors:
+1) if meow is redirect and there is no meow->next
+2) if meow and meow->next are redirects
 */
 int	ft_check_redirect_error(t_list **cmd)
 {
