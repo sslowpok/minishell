@@ -4,6 +4,8 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdio.h>
+# include <string.h>
+# include <errno.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
@@ -46,6 +48,8 @@ typedef struct s_block_process
 
 /*
 **	pipex needs:
+**	0) name of file
+**
 **	1) command name or full path to it:
 **	examples:		"ls"	"usr/bin/ls"
 **
@@ -53,13 +57,16 @@ typedef struct s_block_process
 **	examples:	"ls" "-l"	"wc" "-w"
 **
 **	3) envp variable, where to find "PATH=" (finds itself)
+**	4) files_count from t_block_process (or number of commands?)
 */
 
 typedef struct s_command	//	struct for exacute commands
 {
+	char	*file_name;
 	char	*cmd;
 	char	**cmd_flags;
-	char	*envp;
+	char	**envp;
+	int		files_count;
 }		t_command;
 
 void	pipex(int argc, char **argv, char **envp);
