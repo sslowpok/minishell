@@ -44,6 +44,24 @@ typedef struct s_block_process
 	int			argc;
 }	t_block_process;
 
+/*
+**	pipex needs:
+**	1) command name or full path to it:
+**	examples:		"ls"	"usr/bin/ls"
+**
+**	2) command args:
+**	examples:	"ls" "-l"	"wc" "-w"
+**
+**	3) envp variable, where to find "PATH=" (finds itself)
+*/
+
+typedef struct s_command	//	struct for exacute commands
+{
+	char	*cmd;
+	char	**cmd_flags;
+	char	*envp;
+}		t_command;
+
 void	pipex(int argc, char **argv, char **envp);
 
 #endif
