@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:12:31 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/02 13:56:36 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/02 14:32:17 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 void	error(int code)
 {
 	ft_putendl_fd(strerror(code), 2);
+	exit (1);
 }
 
 int	open_file(char *arg, int code)
@@ -43,6 +44,95 @@ int	open_file(char *arg, int code)
 			error(errno);
 	}
 	return (fd);
+}
+
+char	**paths_fill(char **paths)
+{
+	int		i;
+	char	*tmp;
+
+	if (!paths)
+	{
+		// errno = WHAT IS THE CODE OF MALLOC ERROR?
+		error(errno);
+	}
+	i = 0;
+	while (paths[i])
+	{
+		tmp = ft_strjoin(paths[i], "/");
+		if (!tmp)
+			error(errno);
+		free(paths[i]);
+		paths[i] = ft_strdup(tmp);
+		if (!paths[i])
+			error(errno);
+		free(tmp);
+		i++;
+	}
+	return (paths);
+}
+
+char	**get_paths(char **envp)
+{
+	char	**paths;
+
+	while (*envp)
+	{
+		if (ft_strncmp(*envp, "PATH=", 5) == 0)
+		{
+			paths = paths_fill(ft_split(*envp + 5, ':'));
+			return (paths);
+		}
+		envp++;
+	}
+	return (0);
+}
+
+char	*make_cmd(char **paths, char **cmd_flags)
+{
+	char	*cmd;
+	int		i;
+
+	i = 0;
+	cmd = ft_strdup(cmd_flags[0]);
+	if (!cmd)
+		error(errno);
+	if (!access(cmd, F_OK))
+		return (cmd);
+	else
+	{
+		free(cmd);
+		while (paths[i])
+		{
+			cmd = ft_strjoin(paths[i], cmd_flags[0]);
+			if (!cmd)
+				error(errno);
+			if (!access(cmd, F_OK))
+				break ;
+			free(cmd);
+			i++;
+		}		
+	}
+	return (cmd);
+}
+
+/*
+** if I have cmd and cmd flags, all I need is add path to the cmd
+*/
+void	exec_cmd(t_command *command)
+{
+	char	**paths;
+	char	*final_cmd;
+	
+	paths = get_paths(command->envp);
+	if (!paths)
+		error(errno);
+	final_cmd = make_cmd(paths, command->cmd_flags);
+	if (!final_cmd)
+		error(errno);
+	if (execve(final_cmd, command->cmd_flags, command->envp) < 0)
+		error(errno);
+	// free all
 }
 
 void	processes(t_child *child, t_command *command)
@@ -73,6 +163,7 @@ void	processes(t_child *child, t_command *command)
 
 /*
 ** function that executes commands
+** might have leaks
 */
 void	execute_cmd(t_command *command)
 {
@@ -80,7 +171,10 @@ void	execute_cmd(t_command *command)
 	int		i;
 
 	i = 2;
-	child.fd_in = open_file(command->file_name, 1);
+	if (command->file_name)
+		child.fd_in = open_file(command->file_name, 1);
+	// else
+	// 	child.fd_in = ...
 	if (dup2(child.fd_in, STDIN_FILENO) < 0)
 		error(errno);
 	// need to add case to redirect fd_out if needed
