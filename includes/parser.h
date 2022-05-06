@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 18:42:57 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/06 16:23:23 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/06 18:13:14 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define PARSER_H
 
 # include "minishell.h"
+# include "envp_parser.h"
 
 # define MINISHELL  "minishell: "
 /*Defining parser error messages*/

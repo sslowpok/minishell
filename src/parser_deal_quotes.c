@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 15:27:34 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/06 17:51:44 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/06 18:30:07 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,27 @@ char	*ft_deal_single_quote(char *str, int *j, char *to_copy)
 	return (str);
 }
 
-char	*ft_deal_double_quote(char *str, int *j, char *to_copy)
+char	*ft_check_dollar(char *str, int *j, char *to_copy, t_llist *envp, int __unused flag)
+{
+	char	*en;
+	int		i;
+
+	i = *j;
+	en = ft_strdup("");
+	i++;
+	while (to_copy[i] != 34 && to_copy[i] != 39 && \
+	to_copy[i] && to_copy[i] != '$')
+	{
+		en = ft_strjoin_mod(en, to_copy[i]);
+		i++;
+	}
+	str = ft_strjoin(str, ft_get_value_envp(&envp, en));
+	printf("end: %i, %c\n", i, to_copy[i]);
+	*j = i;
+	return (str);
+}
+
+char	*ft_deal_double_quote(char *str, int *j, char *to_copy, t_llist *envp)
 {
 	int		i;
 
@@ -103,8 +123,13 @@ char	*ft_deal_double_quote(char *str, int *j, char *to_copy)
 	i++;
 	while (to_copy[i] != 34)
 	{
-		str = ft_strjoin_mod(str, to_copy[i]);
-		i++;
+		if (to_copy[i] == '$' && to_copy[i + 1] != 34)
+			str = ft_check_dollar(str, &i, to_copy, envp, 1);
+		else
+		{
+			str = ft_strjoin_mod(str, to_copy[i]);
+			i++;
+		}
 	}
 	i++;
 	*j = i;
@@ -127,8 +152,8 @@ int	ft_delete_quotes(t_list **cmd, t_llist __unused *envp)
 			if (((char *)tmp->content)[i] == 39)
 				str = ft_deal_single_quote(str, &i, (char *)tmp->content);
 			if (((char *)tmp->content)[i] == 34)
-				str = ft_deal_double_quote(str, &i, (char *)tmp->content);
-			else if ((((char *)tmp->content)[i] != 39 && \
+				str = ft_deal_double_quote(str, &i, (char *)tmp->content, envp);
+			if ((((char *)tmp->content)[i] != 39 && \
 			((char *)tmp->content)[i] != 34) && ((char *)tmp->content)[i])
 			{
 				str = ft_strjoin_mod(str, ((char *)tmp->content)[i]);
