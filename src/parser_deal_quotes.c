@@ -6,12 +6,14 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 15:27:34 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/06 18:30:07 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/06 19:10:00 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include "../includes/parser.h"
+
+// TO BE ADDED: $? AND $$
 
 /*
 Examples:
@@ -55,7 +57,7 @@ lolmeow
 3) If we have double quotes -> get rid of quotes and go to p 1.
 */
 
-char	*ft_strjoin_mod(char const *s1, char ch)
+static char	*ft_strjoin_mod(char const *s1, char ch)
 {
 	int		len1;
 	char	*str;
@@ -79,7 +81,8 @@ char	*ft_strjoin_mod(char const *s1, char ch)
 	return (str);
 }
 
-char	*ft_deal_single_quote(char *str, int *j, char *to_copy)
+/*Put every symbol from to_copy to str till closing single quote*/
+static char	*ft_deal_single_quote(char *str, int *j, char *to_copy)
 {
 	int		i;
 
@@ -95,10 +98,22 @@ char	*ft_deal_single_quote(char *str, int *j, char *to_copy)
 	return (str);
 }
 
-char	*ft_check_dollar(char *str, int *j, char *to_copy, t_llist *envp, int __unused flag)
+/*
+Create new string env, which contains all symbols from to_copy
+(from $ to $ 
+or from $ to single quote
+or from $ to double quote
+or from $ to the end of to_copy)
+
+Find varible in envp that has env as key and return its value.
+Join this value to the string content (str).
+return str.
+*/
+static char	*ft_check_dollar(char *str, int *j, char *to_copy, t_llist *envp)
 {
 	char	*en;
 	int		i;
+	char	*val;
 
 	i = *j;
 	en = ft_strdup("");
@@ -109,13 +124,21 @@ char	*ft_check_dollar(char *str, int *j, char *to_copy, t_llist *envp, int __unu
 		en = ft_strjoin_mod(en, to_copy[i]);
 		i++;
 	}
-	str = ft_strjoin(str, ft_get_value_envp(&envp, en));
-	printf("end: %i, %c\n", i, to_copy[i]);
+	val = ft_get_value_envp(&envp, en);
+	if (val)
+		str = ft_strjoin(str, val);
+	free(en);
+	free(val);
 	*j = i;
 	return (str);
 }
 
-char	*ft_deal_double_quote(char *str, int *j, char *to_copy, t_llist *envp)
+/*
+Put every symbol from to_copy to str till closing single quote.
+If you found $ -> join to str result that you get from ft_check_dollar function.
+*/
+static char	*ft_deal_double_quote(char *str, int *j, \
+char *to_copy, t_llist *envp)
 {
 	int		i;
 
@@ -124,7 +147,7 @@ char	*ft_deal_double_quote(char *str, int *j, char *to_copy, t_llist *envp)
 	while (to_copy[i] != 34)
 	{
 		if (to_copy[i] == '$' && to_copy[i + 1] != 34)
-			str = ft_check_dollar(str, &i, to_copy, envp, 1);
+			str = ft_check_dollar(str, &i, to_copy, envp);
 		else
 		{
 			str = ft_strjoin_mod(str, to_copy[i]);
@@ -139,34 +162,34 @@ char	*ft_deal_double_quote(char *str, int *j, char *to_copy, t_llist *envp)
 int	ft_delete_quotes(t_list **cmd, t_llist __unused *envp)
 {
 	char	*str;
-	t_list	*tmp;
+	t_list	*t;
 	int		i;
 
-	tmp = *cmd;
-	while (tmp)
+	t = *cmd;
+	while (t)
 	{
 		i = 0;
 		str = ft_strdup("");
-		while (((char *)tmp->content)[i])
+		while (((char *)t->content)[i])
 		{
-			if (((char *)tmp->content)[i] == 39)
-				str = ft_deal_single_quote(str, &i, (char *)tmp->content);
-			if (((char *)tmp->content)[i] == 34)
-				str = ft_deal_double_quote(str, &i, (char *)tmp->content, envp);
-			if ((((char *)tmp->content)[i] != 39 && \
-			((char *)tmp->content)[i] != 34) && ((char *)tmp->content)[i])
+			if (((char *)t->content)[i] == 39)
+				str = ft_deal_single_quote(str, &i, (char *)t->content);
+			if (((char *)t->content)[i] == 34)
+				str = ft_deal_double_quote(str, &i, (char *)t->content, envp);
+			if (((char *)t->content)[i] == '$' && ((char *)t->content)[i + 1])
+				str = ft_check_dollar(str, &i, (char *)t->content, envp);
+			if ((((char *)t->content)[i] && ((char *)t->content)[i] != 34 && \
+			((char *)t->content)[i] != 39) || \
+			(((char *)t->content)[i] == '$' && !((char *)t->content)[i + 1]))
 			{
-				str = ft_strjoin_mod(str, ((char *)tmp->content)[i]);
+				str = ft_strjoin_mod(str, ((char *)t->content)[i]);
 				i++;
 			}
 		}
-	/*	if ((char *)tmp->content)
-			free((char *)tmp->content);*/
-	//	tmp->content = NULL;
-		tmp->content = (void *)ft_strdup(str);
+		t->content = (void *)ft_strdup(str);
 		free(str);
-		printf("content: %s\n", (char *)tmp->content);
-		tmp = tmp->next;
+		printf("content: %s\n", (char *)t->content);
+		t = t->next;
 	}
 	return (0);
 }
