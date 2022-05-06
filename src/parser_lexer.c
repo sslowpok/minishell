@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 18:21:08 by coverand          #+#    #+#             */
-/*   Updated: 2022/04/28 18:48:07 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/06 16:17:33 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	ft_check_quotes(char *line)
 			while (line[i] && line[i] != 34)
 				i++;
 			if (!line[i])
-				return (1);
+				return (ft_print_parse_error(ERR_DOUBLE_QUOTES));
 		}
 		if (line[i] == 39)
 		{
@@ -36,7 +36,7 @@ int	ft_check_quotes(char *line)
 			while (line[i] && line[i] != 39)
 				i++;
 			if (!line[i])
-				return (1);
+				return (ft_print_parse_error(ERR_SINGLE_QUOTES));
 		}
 		i++;
 	}
@@ -112,17 +112,21 @@ int	ft_lexer(char *line, t_list **lex)
 {
 	char	*token;
 	t_list	*lexems;
+//	char 	*str;
 
 	lexems = NULL;
+//	str = NULL;
 	if (ft_check_quotes(line))
 		return (1);
 	token = ft_strtok(line, ' ');
 	while (token != NULL)
 	{
+		//str = ft_strdup((const char *)token);
 		if (!lexems)
 			lexems = ft_lstnew((void *)token);
 		else
 			ft_lstadd_back(&lexems, ft_lstnew((void *)token));
+	//	free(str);
 		token = ft_strtok(NULL, ' ');
 	}
 	*lex = lexems;

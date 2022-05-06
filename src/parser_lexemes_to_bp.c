@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 13:39:49 by coverand          #+#    #+#             */
-/*   Updated: 2022/04/30 18:52:23 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/06 16:19:49 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,12 +80,13 @@ t_block_process	*ft_create_bp(t_list **cmd)
 	return (block);
 }
 
-int	ft_create_bp_list(t_list **bp, t_list **cmd)
+int	ft_create_bp_list(t_list **bp, t_list **cmd, t_llist *envp)
 {
 	if (!(*bp) && !(*cmd))
 		return (ft_print_parse_error(PARSER_ERR_PIPE));
 	if (ft_check_redirect_error(cmd))
 		return (1);
+	ft_delete_quotes(cmd, envp);
 	if (!(*bp))
 	{
 		*bp = ft_lstnew((void *)ft_create_bp(cmd));
@@ -97,7 +98,7 @@ int	ft_create_bp_list(t_list **bp, t_list **cmd)
 	return (0);
 }
 
-int	ft_lexeme_to_bp(t_list **bp, t_list **lexemes)
+int	ft_lexeme_to_bp(t_list **bp, t_list **lexemes, t_llist *envp)
 {
 	t_list	*lex;
 	t_list	*cmd;
@@ -106,20 +107,13 @@ int	ft_lexeme_to_bp(t_list **bp, t_list **lexemes)
 	cmd = NULL;
 	while (lex)
 	{
-		// check: if lex is redirect and lex->next is |
-		// if lex is | and there is no lex->next
-		// if lex is | and lex->next is redirect
-		// if lex is | and lex->next is |
-	//	printf("%s\n", (const char *)lex->content);
 		if (ft_check_pipe_error(lex))
 			return (1);
 		if (!ft_strncmp((const char *)lex->content, "|", 2))
 		{
 			ft_pop_front(&lex);
-			if (ft_create_bp_list(bp, &cmd))
+			if (ft_create_bp_list(bp, &cmd, envp))
 				return (1);
-			/*printf("The end\n");
-			exit(EXIT_FAILURE);*/
 		}
 		else
 		{
@@ -129,7 +123,7 @@ int	ft_lexeme_to_bp(t_list **bp, t_list **lexemes)
 				ft_lstadd_back(&cmd, ft_lstnew((void *)ft_pop_front(&lex)));
 			if (!lex)
 			{
-				if (ft_create_bp_list(bp, &cmd))
+				if (ft_create_bp_list(bp, &cmd, envp))
 					return (1);
 			}
 		}

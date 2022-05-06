@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/04/29 17:52:43 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/06 16:44:53 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,13 @@ int	main(int argc, char __unused **argv, char __unused **envp)
 		line = ft_readline();
 		if (ft_lexer(line, &lexems))
 			return (1);
-		ft_lexeme_to_bp(&bp, &lexems);
+		/*t_list *lex = lexems;
+		while (lex)
+		{
+			printf("%s\n", (char *)lex->content);
+			lex = lex->next;
+		}*/
+		ft_lexeme_to_bp(&bp, &lexems, info.envp_list);
 		ft_free_block_process(&bp);
 		free(line);
 	}
