@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 15:27:34 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/06 17:45:08 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/06 17:51:44 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ char	*ft_deal_double_quote(char *str, int *j, char *to_copy)
 	return (str);
 }
 
-int	ft_delete_quotes(t_list __unused **cmd, t_llist __unused *envp)
+int	ft_delete_quotes(t_list **cmd, t_llist __unused *envp)
 {
 	char	*str;
 	t_list	*tmp;
@@ -128,19 +128,19 @@ int	ft_delete_quotes(t_list __unused **cmd, t_llist __unused *envp)
 				str = ft_deal_single_quote(str, &i, (char *)tmp->content);
 			if (((char *)tmp->content)[i] == 34)
 				str = ft_deal_double_quote(str, &i, (char *)tmp->content);
-			else if ((((char *)tmp->content)[i] != 39 || ((char *)tmp->content)[i] != 34) && ((char *)tmp->content)[i])
+			else if ((((char *)tmp->content)[i] != 39 && \
+			((char *)tmp->content)[i] != 34) && ((char *)tmp->content)[i])
 			{
 				str = ft_strjoin_mod(str, ((char *)tmp->content)[i]);
 				i++;
 			}
 		}
-		printf("str: %s\n", str);
 	/*	if ((char *)tmp->content)
 			free((char *)tmp->content);*/
 	//	tmp->content = NULL;
 		tmp->content = (void *)ft_strdup(str);
 		free(str);
-		printf("cont: %s\n", (char *)tmp->content);
+		printf("content: %s\n", (char *)tmp->content);
 		tmp = tmp->next;
 	}
 	return (0);
