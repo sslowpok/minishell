@@ -6,12 +6,11 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 16:12:49 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/04 16:17:27 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/07 15:51:32 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-#include "../includes/pipex_bonus.h"
 
 void	error(int code, char *text)
 {
@@ -109,6 +108,46 @@ void	execute_cmd(char *arg, char **envp)
 		error(-1, cmd_flags[0]);
 	// total_free(paths);
 	// total_free(cmd_flags);
+}
+
+void	init_child(t_child *child, t_command *cmd)
+{
+	child->i = -1;
+	child->fd[0] = -1;
+	child->fd[1] = -1;
+	child->envp = cmd->envp;
+	
+}
+
+int	open_file(t_dict *fd)
+{
+	int	return_fd;
+
+	if (fd->key == "<")
+		return_fd = open(fd->value, O_RDONLY);
+	else if (fd->key == "<<")
+		;
+	else if (fd->key == ">")
+		;
+	else if (fd->key == ">>")
+		;
+	else 
+	{
+		;
+	}
+	if (return_fd < 0)
+	// need signal here, no exit
+		strerror(errno);
+	fd = fd->next;
+	return (return_fd);
+}
+
+void	executor(t_command *cmd)
+{
+	t_child	child;
+	
+	init_child(&child, cmd);
+	child.fd_in = open_file(cmd->fd_in);
 }
 
 int main(int argc, char **argv, char **envp)
