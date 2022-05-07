@@ -64,6 +64,7 @@ typedef struct s_block_process
 typedef struct s_child
 {
 	int		i;
+	int		len;
 	char	*path;
 	char	**envp;
 	int		fd[2];

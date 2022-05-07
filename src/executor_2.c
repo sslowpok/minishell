@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 16:12:49 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/07 15:51:32 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/07 17:29:30 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,25 +110,39 @@ void	execute_cmd(char *arg, char **envp)
 	// total_free(cmd_flags);
 }
 
+int	ft_cmdlen(t_command *cmd)
+{
+	int	i;
+
+	i = 0;
+	while (cmd)
+	{
+		i++;
+		cmd = cmd->next;
+	}
+	return (i);
+}
+
 void	init_child(t_child *child, t_command *cmd)
 {
 	child->i = -1;
 	child->fd[0] = -1;
 	child->fd[1] = -1;
 	child->envp = cmd->envp;
-	
+	child->len = ft_cmdlen(cmd);
 }
 
 int	open_file(t_dict *fd)
 {
 	int	return_fd;
 
+// 	add case if no redirect
 	if (fd->key == "<")
 		return_fd = open(fd->value, O_RDONLY);
 	else if (fd->key == "<<")
 		;
 	else if (fd->key == ">")
-		;
+		return_fd = open(fd->value, O_WRONLY | O_TRUNC | O_CREAT, 0644);
 	else if (fd->key == ">>")
 		;
 	else 
@@ -142,12 +156,50 @@ int	open_file(t_dict *fd)
 	return (return_fd);
 }
 
+void	processes(t_child *child, t_command *cmd)
+{
+	pid_t	pid;
+
+	if (pipe(child->fd) < 0)
+		strerror(errno);
+	pid = fork();
+	if (pid < 0)
+		strerror(errno);
+	else if (pid == 0)
+	{
+		close(child->fd[0]);
+		if (dup2(child->fd[1], STDOUT_FILENO) < 0)
+			strerror(errno);
+		close (child->fd[1]);
+		execute_cmd(cmd->name, cmd->envp);
+	}
+	else
+	{
+		close(child->fd[1]);
+		if (dup2(child->fd[0], STDIN_FILENO) < 0)
+			strerror(errno);
+		close (child->fd[0]);
+	}
+}
+
 void	executor(t_command *cmd)
 {
 	t_child	child;
 	
 	init_child(&child, cmd);
 	child.fd_in = open_file(cmd->fd_in);
+	if (dup2(child.fd_in, STDIN_FILENO) < 0)
+		strerror(errno);
+	// child.fd_out = 
+	// if (dup2(child.fd_out, STDOUT_FILENO) < 0)
+	// strerror(errno);
+	while (++child.i < child.len)
+	{
+		processes(&child, cmd);
+		cmd = cmd->next; // needed or not?
+	}
+	// maybe cmd does not move to the next one
+	// execute_cmd(last cmd);
 }
 
 int main(int argc, char **argv, char **envp)
