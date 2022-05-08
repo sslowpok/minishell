@@ -41,10 +41,10 @@ typedef struct s_file_info
 
 typedef struct s_block_process
 {
-	char		**argv;
-	t_file_info	*files;
-	int			files_count;
-	int			argc;
+	char		**argv; // "ls" "-la"
+	t_file_info	*files;	// {0, filename}
+	int			files_count;	// мб кол-во редиректов
+	int			argc;	// хз че это
 }	t_block_process;
 
 /*
@@ -74,9 +74,6 @@ typedef struct s_child
 
 typedef struct s_command	//	struct for exacute commands
 {
-	// envp можно в глобалку
-	char	**envp;
-
 	// int					count;
 	// заполнить из t_file_info
 	t_llist				*fd_in; // key - redirect type (<, <<, >, >>), value - filename
@@ -87,11 +84,19 @@ typedef struct s_command	//	struct for exacute commands
 
 typedef struct s_global
 {
-	char			**local_envp;
-	t_block_process	*block_process;
-	t_command		*cmd;
-	int				last_return;
+	char		**local_envp;
+	t_list		*block_process; // content - t_block_process
+	// 
+	// t_command	*cmd;
+	int			last_return;
 
 }		t_global;
+
+void	execute_cmd(char *arg, char **envp); // "ls -la"
+void	executor(void);
+void	init_cmd(void);
+
+
+t_global	global;
 
 #endif
