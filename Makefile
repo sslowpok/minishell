@@ -4,59 +4,43 @@ CC		=	cc
 CFLAGS	=	-Wall -Wextra -Werror
 RM		=	rm -rf
 
-SRC_DIR	=	./src/
-OBJ_DIR	=	./obj/
-INC_DIR	=	./includes/
-LIBFT_DIR	=	./libft/
+SRC	=	parser/envp_list_utils.c \
+		parser/envp_parser_utils.c \
+		parser/parser_block_process_clear.c \
+		parser/parser_check_commands.c \
+		parser/parser_lexemes_to_bp.c \
+		parser/parser_lexer.c \
+		parser/parser_redir_utils.c \
+		parser/parser_utils1.c \
+		src/main.c \
+		executor/executor_2.c
 
-SRC_LIST	=	main.c \
-				cmd.c \
-				errors.c \
-				main_pipex.c \
-				paths.c \
-				utils.c \
-				parser_lexer.c \
-				parser_lexemes_to_bp.c \
-				parser_utils1.c \
-				parser_redir_utils.c \
-				parser_block_process_clear.c \
-				envp_parser_utils.c \
-				envp_list_utils.c \
-				parser_check_commands.c
+HEADERS	=	includes/envp_parser.h \
+			includes/error.h \
+			includes/minishell.h \
+			includes/parser.h
 
-OBJ_LIST	=	$(SRC:%.c=%.o)
+OBJ	=	$(SRC:.c=.o)
 
-HEADERS_LIST	=	minishell.h
+%.o:	%.c	$(HEADERS) Makefile
+		$(CC) $(CFLAGS) -c $< -o $(<:.c=.o)
 
-SRC		=	$(addprefix $(SRC_DIR), $(SRC_LIST))
-OBJ		=	$(addprefix $(OBJ_DIR), $(notdir $(OBJ_LIST)))
-HEADERS	=	$(addprefix $(INC_DIR), $(HEADERS_LIST))
-LIBFT	=	$(addprefix $(LIBFT_DIR), libft.a)
+# LIBFT	=	./libft/libft.a
 
-RL_INCLUDE  =   ~/.brew/opt/readline/include
-RL_LIB      =   ~/.brew/opt/readline/lib
+# $(LIBFT):
+# 		make bonus -C ./libft/
 
-.PHONY:	all clean fclean re
-
-all:	$(LIBFT) $(NAME)
-
-$(LIBFT):
+$(NAME):	$(OBJ)
 		make bonus -C ./libft/
+		$(CC) $(CFLAGS) $(LD_FLAGS) $(OBJ) ./libft/libft.a -o $(NAME) -lreadline
 
-$(OBJ_DIR)%.o:	$(SRC_DIR)%.c $(HEADERS) | $(OBJ_DIR)
-		$(CC) $(CFLAGS) -c $< -o $@
-
-$(NAME):	$(OBJ) Makefile
-		$(CC) $(CFLAGS) -lreadline -L $(RL_LIB) -I $(RL_INCLUDE) $(OBJ) $(LIBFT) -o $(NAME)
-
-$(OBJ_DIR):
-		@mkdir $(OBJ_DIR)
+all:	$(NAME)
 
 clean:
-		@$(RM) $(OBJ_DIR)
+		$(RM) $(OBJ)
 		make clean -C ./libft/
 
 fclean:	clean
-		@$(RM) $(NAME) $(LIBFT)
+		$(RM) $(NAME)
 
-re:	fclean $(OBJ_DIR) all
+re:	fclean all

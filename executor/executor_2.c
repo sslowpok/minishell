@@ -6,11 +6,12 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 16:12:49 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/07 17:29:30 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/08 14:18:57 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+#include "../libft/libft.h"
 
 void	error(int code, char *text)
 {
@@ -89,7 +90,7 @@ char	*make_cmd(char **paths, char **cmd_flags)
 	return (cmd);
 }
 
-void	execute_cmd(char *arg, char **envp)
+void	execute_cmd(char *arg, char **envp) // "ls -la" 
 {
 	char	**paths;
 	char	**cmd_flags;
@@ -132,18 +133,20 @@ void	init_child(t_child *child, t_command *cmd)
 	child->len = ft_cmdlen(cmd);
 }
 
-int	open_file(t_dict *fd)
+int	open_file(t_llist *fd)
 {
 	int	return_fd;
 
+	return_fd = -1;
+
 // 	add case if no redirect
-	if (fd->key == "<")
+	if (ft_strncmp(fd->key,"<", 1) == 0)
 		return_fd = open(fd->value, O_RDONLY);
-	else if (fd->key == "<<")
+	else if (ft_strncmp(fd->key,"<<", 2) == 0)
 		;
-	else if (fd->key == ">")
+	else if (ft_strncmp(fd->key,">", 1) == 0)
 		return_fd = open(fd->value, O_WRONLY | O_TRUNC | O_CREAT, 0644);
-	else if (fd->key == ">>")
+	else if (ft_strncmp(fd->key,">>", 2) == 0)
 		;
 	else 
 	{
@@ -198,11 +201,10 @@ void	executor(t_command *cmd)
 		processes(&child, cmd);
 		cmd = cmd->next; // needed or not?
 	}
-	// maybe cmd does not move to the next one
 	// execute_cmd(last cmd);
 }
 
-int main(int argc, char **argv, char **envp)
-{
-	execute_cmd("yes", envp);
-}
+// int main(__unused int argc, __unused char **argv, __unused char **envp)
+// {
+// 	return (0);
+// }

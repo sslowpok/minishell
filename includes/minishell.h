@@ -14,19 +14,19 @@
 
 // typedef int(*t_builtin_ptr)(t_list*, t_info*);
 
-typedef struct s_dict
+typedef struct s_llist
 {
 	char			*key;
 	char			*value;
-	struct s_dict	*next;
+	struct s_llist	*next;
 
-}	t_dict;
+}	t_llist;
 
 typedef struct s_info
 {
 	char	*reserved_words[7];
 	char	**envp;
-	t_dict	*envp_list;
+	t_llist	*envp_list;
 	int		envp_f;
 	int		exit_f;
 	int		status;
@@ -77,9 +77,9 @@ typedef struct s_command	//	struct for exacute commands
 	// envp можно в глобалку
 	char	**envp;
 
-	int					count;
-	t_dict				*fd_in; // key - redirect type (<, <<, >, >>), value - filename
-	t_dict				*fd_out; // key - redirect type (<, <<, >, >>), value - filename
+	// int					count;
+	t_llist				*fd_in; // key - redirect type (<, <<, >, >>), value - filename
+	t_llist				*fd_out; // key - redirect type (<, <<, >, >>), value - filename
 	char				*name;
 	struct s_command	*next;
 }		t_command;
