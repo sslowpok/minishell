@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 16:12:49 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/08 14:18:57 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/08 18:08:33 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,47 +90,21 @@ char	*make_cmd(char **paths, char **cmd_flags)
 	return (cmd);
 }
 
-void	execute_cmd(char *arg, char **envp) // "ls -la" 
+void	execute_cmd(char **args) // "ls" "-la" 
 {
+
 	char	**paths;
-	char	**cmd_flags;
 	char	*cmd;
 
-	paths = get_paths(envp);
+	paths = get_paths(global.local_envp);
 	if (!paths)
 		error(errno, "Malloc: ");
-	cmd_flags = ft_split(arg, ' ');
-	if (!cmd_flags)
-		error(errno, "Malloc: ");
-	cmd = make_cmd(paths, cmd_flags);
-	if (!cmd)
-		error(errno, "Malloc: ");
-	if (execve(cmd, cmd_flags, envp) < 0)
-		error(-1, cmd_flags[0]);
+	cmd = args[0];
+	printf("cmd = %s\n", cmd);
+	if (execve(cmd, args, global.local_envp) < 0)
+		strerror(errno);
 	// total_free(paths);
 	// total_free(cmd_flags);
-}
-
-int	ft_cmdlen(t_command *cmd)
-{
-	int	i;
-
-	i = 0;
-	while (cmd)
-	{
-		i++;
-		cmd = cmd->next;
-	}
-	return (i);
-}
-
-void	init_child(t_child *child, t_command *cmd)
-{
-	child->i = -1;
-	child->fd[0] = -1;
-	child->fd[1] = -1;
-	child->envp = cmd->envp;
-	child->len = ft_cmdlen(cmd);
 }
 
 int	open_file(t_llist *fd)
@@ -159,22 +133,28 @@ int	open_file(t_llist *fd)
 	return (return_fd);
 }
 
-void	processes(t_child *child, t_command *cmd)
+void	processes(t_child *child, t_list *bp)
 {
-	pid_t	pid;
 
+	pid_t	pid;
+	t_block_process *block;
+
+	block = (t_block_process *)bp->content;
 	if (pipe(child->fd) < 0)
 		strerror(errno);
 	pid = fork();
 	if (pid < 0)
 		strerror(errno);
+	
 	else if (pid == 0)
 	{
+	printf("was here\n");
+
 		close(child->fd[0]);
 		if (dup2(child->fd[1], STDOUT_FILENO) < 0)
 			strerror(errno);
 		close (child->fd[1]);
-		execute_cmd(cmd->name, cmd->envp);
+		execute_cmd(block->argv);
 	}
 	else
 	{
@@ -182,26 +162,27 @@ void	processes(t_child *child, t_command *cmd)
 		if (dup2(child->fd[0], STDIN_FILENO) < 0)
 			strerror(errno);
 		close (child->fd[0]);
+		// пофиксить пипех для waitpid
+		waitpid(pid, NULL, 0);
 	}
 }
 
-void	executor(t_command *cmd)
+void	executor(t_list *bp)
 {
 	t_child	child;
-	
-	init_child(&child, cmd);
-	child.fd_in = open_file(cmd->fd_in);
-	if (dup2(child.fd_in, STDIN_FILENO) < 0)
-		strerror(errno);
-	// child.fd_out = 
-	// if (dup2(child.fd_out, STDOUT_FILENO) < 0)
-	// strerror(errno);
-	while (++child.i < child.len)
+
+	child.fd_in = 0;
+	child.fd_out = 1;
+
+	while (bp)
 	{
-		processes(&child, cmd);
-		cmd = cmd->next; // needed or not?
+
+		processes(&child, bp);
+		bp = bp->next;
 	}
-	// execute_cmd(last cmd);
+
+
+
 }
 
 // int main(__unused int argc, __unused char **argv, __unused char **envp)

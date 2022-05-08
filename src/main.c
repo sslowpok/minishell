@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/08 15:16:04 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/08 18:00:53 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,25 +97,38 @@ int	main(int argc, char __unused **argv, char __unused **envp)
 		}*/
 		ft_lexeme_to_bp(&bp, &lexems, info.envp_list);
 
-t_list	*tmp = bp;
-		printf("size: %i\n", ft_lstsize(tmp));
-		while (tmp)
-		{
-			int	i;
-			i = 0;
-			t_block_process	*block = (t_block_process *)tmp->content;
-			while (block->argv[i])
-			{
-				printf("%i) %s\n", i, block->argv[i]);
-				i++;
-			}
-			// while (i < block->files_count)
-			// {
-			// 	printf("redir: %i, file: %s\n", block->files[i].redirect_type, block->files[i].file_name);
-			// 	i++;
-			// }
-			tmp = tmp->next;
-		}
+// t_list	*tmp = bp;
+// 		printf("size: %i\n", ft_lstsize(tmp));
+// 		while (tmp)
+// 		{
+// 			int	i;
+// 			i = 0;
+// 			t_block_process	*block = (t_block_process *)tmp->content;
+// 			while (block->argv[i])
+// 			{
+// 				printf("%i) %s\n", i, block->argv[i]);
+// 				i++;
+// 			}
+// 			// while (i < block->files_count)
+// 			// {
+// 			// 	printf("redir: %i, file: %s\n", block->files[i].redirect_type, block->files[i].file_name);
+// 			// 	i++;
+// 			// }
+// 			tmp = tmp->next;
+// 		}
+		
+		// ls -la | grep "lol"
+// 			имеем bp - тип t_list, content - структуры t_block_process
+// 		typedef struct s_block_process
+// {
+// 	char		**argv; // "ls" "-la" ; "grep" "lol"
+// 	t_file_info	*files;	// {0, filename}
+// 	int			files_count;	// мб кол-во редиректов
+// 	int			argc;	// хз че это
+// }	t_block_process;
+
+	executor(bp);
+
 		
 		ft_free_block_process(&bp);		
 		free(line);

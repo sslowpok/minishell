@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_deal_quotes.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 15:27:34 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/06 19:10:00 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/08 17:46:40 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,7 +188,7 @@ int	ft_delete_quotes(t_list **cmd, t_llist __unused *envp)
 		}
 		t->content = (void *)ft_strdup(str);
 		free(str);
-		printf("content: %s\n", (char *)t->content);
+		// printf("content: %s\n", (char *)t->content);
 		t = t->next;
 	}
 	return (0);
