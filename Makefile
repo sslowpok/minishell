@@ -9,6 +9,7 @@ SRC	=	parser/envp_list_utils.c \
 		parser/parser_block_process_clear.c \
 		parser/parser_check_commands.c \
 		parser/parser_lexemes_to_bp.c \
+		parser/parser_deal_quotes.c \
 		parser/parser_lexer.c \
 		parser/parser_redir_utils.c \
 		parser/parser_utils1.c \

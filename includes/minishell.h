@@ -78,10 +78,20 @@ typedef struct s_command	//	struct for exacute commands
 	char	**envp;
 
 	// int					count;
+	// заполнить из t_file_info
 	t_llist				*fd_in; // key - redirect type (<, <<, >, >>), value - filename
 	t_llist				*fd_out; // key - redirect type (<, <<, >, >>), value - filename
 	char				*name;
 	struct s_command	*next;
 }		t_command;
+
+typedef struct s_global
+{
+	char			**local_envp;
+	t_block_process	*block_process;
+	t_command		*cmd;
+	int				last_return;
+
+}		t_global;
 
 #endif
