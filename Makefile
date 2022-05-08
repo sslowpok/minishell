@@ -25,10 +25,6 @@ OBJ	=	$(SRC:.c=.o)
 %.o:	%.c	$(HEADERS) Makefile
 		$(CC) $(CFLAGS) -c $< -o $(<:.c=.o)
 
-# LIBFT	=	./libft/libft.a
-
-# $(LIBFT):
-# 		make bonus -C ./libft/
 
 $(NAME):	$(OBJ)
 		make bonus -C ./libft/
