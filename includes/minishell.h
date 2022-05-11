@@ -53,7 +53,7 @@ typedef struct s_child
 	// int		len;
 	char	*path;
 	char	**envp;
-	int		fd[2];
+	int		fd[2][2];
 	int		fd_in;
 	int		fd_out;
 }			t_child;

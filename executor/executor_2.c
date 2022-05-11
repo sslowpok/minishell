@@ -6,12 +6,11 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 16:12:49 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/08 18:08:33 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/11 11:58:21 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-#include "../libft/libft.h"
 
 void	error(int code, char *text)
 {
@@ -133,52 +132,96 @@ int	open_file(t_llist *fd)
 	return (return_fd);
 }
 
-void	processes(t_child *child, t_list *bp)
-{
+// void	processes(t_child *child, t_list *bp)
+// {
 
-	pid_t	pid;
-	t_block_process *block;
+// 	pid_t	pid;
+// 	t_block_process *block;
 
-	block = (t_block_process *)bp->content;
-	if (pipe(child->fd) < 0)
-		strerror(errno);
-	pid = fork();
-	if (pid < 0)
-		strerror(errno);
+// 	block = (t_block_process *)bp->content;
+// 	if (pipe(child->fd) < 0)
+// 		strerror(errno);
+// 	pid = fork();
+// 	if (pid < 0)
+// 		strerror(errno);
 	
-	else if (pid == 0)
-	{
-	printf("was here\n");
+// 	else if (pid == 0)
+// 	{
+// 	printf("was here\n");
 
-		close(child->fd[0]);
-		if (dup2(child->fd[1], STDOUT_FILENO) < 0)
-			strerror(errno);
-		close (child->fd[1]);
-		execute_cmd(block->argv);
-	}
-	else
-	{
-		close(child->fd[1]);
-		if (dup2(child->fd[0], STDIN_FILENO) < 0)
-			strerror(errno);
-		close (child->fd[0]);
-		// пофиксить пипех для waitpid
-		waitpid(pid, NULL, 0);
-	}
-}
+// 		close(child->fd[0]);
+// 		if (dup2(child->fd[1], STDOUT_FILENO) < 0)
+// 			strerror(errno);
+// 		close (child->fd[1]);
+// 		execute_cmd(block->argv);
+// 	}
+// 	else
+// 	{
+// 		close(child->fd[1]);
+// 		if (dup2(child->fd[0], STDIN_FILENO) < 0)
+// 			strerror(errno);
+// 		close (child->fd[0]);
+// 		// пофиксить пипех для waitpid
+// 		waitpid(pid, NULL, 0);
+// 	}
+// }
+
+
+//		< infile ls | grep "smt" | wc -l > outfile
+// 			имеем bp - тип t_list, content - структуры t_block_process
+// 
+// typedef struct s_block_process
+// {
+// 	char		**argv;
+						// "ls"
+						// "grep" "smt"
+						// "wc" "-l"
+// 
+// 	t_file_info	*files;	// {0, infile}
+// 						// {1, outfile}
+						//
+// 	int			files_count;	// мб кол-во редиректов
+// 	int			argc;	// хз че это
+// }	t_block_process;
 
 void	executor(t_list *bp)
 {
 	t_child	child;
+	t_block_process	*block;
+	pid_t	pid;
+	int	i;
 
+	i = 0;
 	child.fd_in = 0;
 	child.fd_out = 1;
 
 	while (bp)
 	{
+		block = (t_block_process *)bp->content;
+		if (block->files)
+		{
+			// case if first and last block of bp
+			child.fd_in = open(block->files->file_name, O_RDONLY);
+			if (dup2(child.fd_in, STDIN_FILENO) < 0)
+				strerror(errno);
+		}
+		if (pipe(child.fd[i]) == -1)
+			strerror(errno);
+		pid = fork();
+		if (pid < 0)
+			strerror(errno);
+		else if (pid == 0)
+		{
+			// child_work
+		}
+		else
+		{
+			// parent_work
+		}
 
-		processes(&child, bp);
+		// processes(&child, bp);
 		bp = bp->next;
+		i++;
 	}
 
 
