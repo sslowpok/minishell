@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/08 18:00:53 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/11 15:02:26 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ char	*ft_readline(void)
 
 /* bp - list with block_processes. 
 Each element of bp has structure t_block_process as content*/
-int	main(int argc, char __unused **argv, char __unused **envp)
+int	main(int argc, char __unused **argv, char **envp)
 {
 	t_info	info;
 	char	*line;
@@ -127,8 +127,23 @@ int	main(int argc, char __unused **argv, char __unused **envp)
 // 	int			argc;	// хз че это
 // }	t_block_process;
 
-	executor(bp);
+	t_block_process	*block;
 
+	block = (t_block_process *)bp->content;
+
+	// printf("argv[0] = %s\n", block->argv[0]);
+	// printf("argv[1] = %s\n", block->argv[1]);
+
+	// char	*a[3];
+	// a[0] = "ls";
+	// a[1] = "-l";
+	// a[2] = "\0";
+
+	
+	global.local_envp = envp;
+
+	executor(bp);
+// printf("was here\n");
 		
 		ft_free_block_process(&bp);		
 		free(line);

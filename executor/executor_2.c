@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 16:12:49 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/11 11:58:21 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/11 16:16:02 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,22 +89,22 @@ char	*make_cmd(char **paths, char **cmd_flags)
 	return (cmd);
 }
 
-void	execute_cmd(char **args) // "ls" "-la" 
-{
+// void	execute_cmd(char **args) // "ls" "-la" 
+// {
 
-	char	**paths;
-	char	*cmd;
+// 	char	**paths;
+// 	char	*cmd;
 
-	paths = get_paths(global.local_envp);
-	if (!paths)
-		error(errno, "Malloc: ");
-	cmd = args[0];
-	printf("cmd = %s\n", cmd);
-	if (execve(cmd, args, global.local_envp) < 0)
-		strerror(errno);
-	// total_free(paths);
-	// total_free(cmd_flags);
-}
+// 	paths = get_paths(global.local_envp);
+// 	if (!paths)
+// 		error(errno, "Malloc: ");
+// 	cmd = args[0];
+// 	printf("cmd = %s\n", cmd);
+// 	if (execve(cmd, args, global.local_envp) < 0)
+// 		strerror(errno);
+// 	// total_free(paths);
+// 	// total_free(cmd_flags);
+// }
 
 int	open_file(t_llist *fd)
 {
@@ -132,40 +132,6 @@ int	open_file(t_llist *fd)
 	return (return_fd);
 }
 
-// void	processes(t_child *child, t_list *bp)
-// {
-
-// 	pid_t	pid;
-// 	t_block_process *block;
-
-// 	block = (t_block_process *)bp->content;
-// 	if (pipe(child->fd) < 0)
-// 		strerror(errno);
-// 	pid = fork();
-// 	if (pid < 0)
-// 		strerror(errno);
-	
-// 	else if (pid == 0)
-// 	{
-// 	printf("was here\n");
-
-// 		close(child->fd[0]);
-// 		if (dup2(child->fd[1], STDOUT_FILENO) < 0)
-// 			strerror(errno);
-// 		close (child->fd[1]);
-// 		execute_cmd(block->argv);
-// 	}
-// 	else
-// 	{
-// 		close(child->fd[1]);
-// 		if (dup2(child->fd[0], STDIN_FILENO) < 0)
-// 			strerror(errno);
-// 		close (child->fd[0]);
-// 		// пофиксить пипех для waitpid
-// 		waitpid(pid, NULL, 0);
-// 	}
-// }
-
 
 //		< infile ls | grep "smt" | wc -l > outfile
 // 			имеем bp - тип t_list, content - структуры t_block_process
@@ -174,8 +140,6 @@ int	open_file(t_llist *fd)
 // {
 // 	char		**argv;
 						// "ls"
-						// "grep" "smt"
-						// "wc" "-l"
 // 
 // 	t_file_info	*files;	// {0, infile}
 // 						// {1, outfile}
@@ -184,47 +148,109 @@ int	open_file(t_llist *fd)
 // 	int			argc;	// хз че это
 // }	t_block_process;
 
-void	executor(t_list *bp)
+void	init_child(t_child *child, t_list *bp)
 {
-	t_child	child;
-	t_block_process	*block;
-	pid_t	pid;
+	child->i = -1;
+	child->current = 0;
+	child->fd[0][0] = -1;
+	child->fd[0][1] = -1;
+	child->fd[1][0] = -1;
+	child->fd[1][1] = -1;
+	child->len = ft_lstsize(bp);
+}
+
+void	execute_cmd(t_block_process *block)
+{
+
+	char	**paths;
+	char	*cmd;
+
+	paths = get_paths(global.local_envp);
+	if (!paths)
+		strerror(errno);
+	cmd = make_cmd(paths, block->argv);
+	printf("cmd = %s\n", cmd);
+	if (execve(cmd, block->argv, global.local_envp) < 0)
+		strerror(errno);
+	// total_free(paths);
+	// total_free(cmd_flags);
+}
+
+void	child_labour(t_child *child, t_block_process *block, __unused int len)
+{
+	// need to fill fd_in before here
+	if (child->i > 0)
+	{
+		if (dup2(child->fd[1 - child->current][0], STDIN_FILENO) < 0)
+			strerror(errno);
+		close(child->fd[1 - child->current][0]);
+	}
+	if (child->fd_out != 0 && child->i < len - 1)
+	{
+		if (dup2(child->fd[child->current][1], STDOUT_FILENO) < 0)
+			strerror(errno);
+		// close(child->fd[child->current][0]);
+		// close(child->fd[child->current][1]);
+	}
+	
+	// r_in
+	// r_out
+	execute_cmd(block);
+}
+
+void	sig_sig_signal(void)
+{
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+}
+
+void	wait_child(int len)
+{
 	int	i;
 
 	i = 0;
-	child.fd_in = 0;
-	child.fd_out = 1;
-
-	while (bp)
+	while (i < len)
 	{
-		block = (t_block_process *)bp->content;
-		if (block->files)
-		{
-			// case if first and last block of bp
-			child.fd_in = open(block->files->file_name, O_RDONLY);
-			if (dup2(child.fd_in, STDIN_FILENO) < 0)
-				strerror(errno);
-		}
-		if (pipe(child.fd[i]) == -1)
-			strerror(errno);
-		pid = fork();
-		if (pid < 0)
-			strerror(errno);
-		else if (pid == 0)
-		{
-			// child_work
-		}
-		else
-		{
-			// parent_work
-		}
-
-		// processes(&child, bp);
-		bp = bp->next;
+		waitpid(-1, 0, 0);
 		i++;
 	}
+}
+
+// make it simply work with execution of cmds to start with
+void	executor(t_list *bp)
+{
+	t_child			child;
+	t_block_process	*block;
+
+	child.fd_in = 0;
+	child.fd_out = 1;
+	init_child(&child, bp);
 
 
+
+	while (++child.i < child.len)
+	{
+		block = (t_block_process *)bp->content;
+		printf("current block = %s\n", block->argv[0]);
+		if (pipe(child.fd[child.current]) == -1)
+			strerror(errno);
+		child.pid = fork();
+		if (child.pid)
+			// sig_sig_signal();
+			;
+		else if (child.pid < 0)
+			strerror(errno);
+		else if (child.pid == 0)
+			child_labour(&child, block, child.len);
+		close(child.fd[1 - child.current][0]);
+		close(child.fd[child.current][1]);
+		// if (child.pid == 0)
+		// 	exit(0);		// why?
+		child.current = 1 - child.current;
+		bp = bp->next;
+	}
+	close(child.fd[1 - child.current][0]);
+	wait_child(child.len);
 
 }
 

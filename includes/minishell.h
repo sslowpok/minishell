@@ -1,6 +1,7 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <signal.h>
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdio.h>
@@ -50,9 +51,14 @@ typedef struct s_block_process
 typedef struct s_child
 {
 	// int		i;
-	// int		len;
+	int		len;
+	int		current;
+	int		i;
 	char	*path;
+
 	char	**envp;
+	
+	pid_t	pid;
 	int		fd[2][2];
 	int		fd_in;
 	int		fd_out;
@@ -68,7 +74,6 @@ typedef struct s_global
 
 }		t_global;
 
-void	execute_cmd(char **args); // "ls" "-la" 
 void	executor(t_list *bp);
 
 
