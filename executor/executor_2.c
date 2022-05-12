@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 16:12:49 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/11 16:16:02 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/12 13:05:30 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,7 +169,6 @@ void	execute_cmd(t_block_process *block)
 	if (!paths)
 		strerror(errno);
 	cmd = make_cmd(paths, block->argv);
-	printf("cmd = %s\n", cmd);
 	if (execve(cmd, block->argv, global.local_envp) < 0)
 		strerror(errno);
 	// total_free(paths);
@@ -189,8 +188,8 @@ void	child_labour(t_child *child, t_block_process *block, __unused int len)
 	{
 		if (dup2(child->fd[child->current][1], STDOUT_FILENO) < 0)
 			strerror(errno);
-		// close(child->fd[child->current][0]);
-		// close(child->fd[child->current][1]);
+		close(child->fd[child->current][0]);
+		close(child->fd[child->current][1]);
 	}
 	
 	// r_in
@@ -226,12 +225,9 @@ void	executor(t_list *bp)
 	child.fd_out = 1;
 	init_child(&child, bp);
 
-
-
 	while (++child.i < child.len)
 	{
 		block = (t_block_process *)bp->content;
-		printf("current block = %s\n", block->argv[0]);
 		if (pipe(child.fd[child.current]) == -1)
 			strerror(errno);
 		child.pid = fork();
@@ -244,8 +240,8 @@ void	executor(t_list *bp)
 			child_labour(&child, block, child.len);
 		close(child.fd[1 - child.current][0]);
 		close(child.fd[child.current][1]);
-		// if (child.pid == 0)
-		// 	exit(0);		// why?
+		if (child.pid == 0)
+			exit(0);
 		child.current = 1 - child.current;
 		bp = bp->next;
 	}
