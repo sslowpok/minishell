@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/11 15:02:26 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/12 17:19:48 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,8 @@ int	main(int argc, char __unused **argv, char **envp)
 	while (1)
 	{
 		line = ft_readline();
+		if (ft_strlen(line) == 0)
+			continue ;
 		if (ft_lexer(line, &lexems))
 			return (1);
 		/*t_list *lex = lexems;
@@ -141,6 +143,8 @@ int	main(int argc, char __unused **argv, char **envp)
 
 	
 	global.local_envp = envp;
+// local envp можно сделать листом, Диана говорит, с ним удобнее работать :)
+
 
 	executor(bp);
 // printf("was here\n");

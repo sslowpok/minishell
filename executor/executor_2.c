@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 16:12:49 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/12 13:05:30 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/12 17:21:11 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,11 +63,23 @@ char	**get_paths(char **envp)
 	return (0);
 }
 
+int	ft_paths_len(char **paths)
+{
+	int	i;
+
+	i = 0;
+	while (paths[i])
+		i++;
+	return (i);
+}
+
 char	*make_cmd(char **paths, char **cmd_flags)
 {
 	char	*cmd;
 	int		i;
-
+	int		paths_len;
+	
+	paths_len = ft_paths_len(paths);
 	i = 0;
 	cmd = ft_strdup(cmd_flags[0]);
 	if (!cmd)
@@ -84,6 +96,9 @@ char	*make_cmd(char **paths, char **cmd_flags)
 				break ;
 			free(cmd);
 			i++;
+			if (i == paths_len)
+				printf("command not found: %s\n", cmd_flags[0]);
+			// должен выводить для всех невалидных команд, выводит только для одной
 		}
 	}
 	return (cmd);
@@ -175,7 +190,29 @@ void	execute_cmd(t_block_process *block)
 	// total_free(cmd_flags);
 }
 
-void	child_labour(t_child *child, t_block_process *block, __unused int len)
+void	r_in(t_block_process *block, t_child *child)
+{
+	t_file_info	*tmp;
+
+
+	tmp = block->files;
+	// printf("redirect type = %d\n", tmp->redirect_type);
+	// printf("filename = %s\n", tmp->file_name);
+	// printf("cmd name = %s\n", block->argv[0]);
+
+	if (tmp->redirect_type == 2) // "<"
+		child->fd_in = open(tmp->file_name, O_RDONLY);
+	else if (tmp->redirect_type == 1) // "<<"
+		child->fd_in = open(tmp->file_name, O_RDONLY);
+	if (child->fd_in < 0)
+		strerror(errno);
+	if (child->fd_in && dup2(child->fd_in, STDIN_FILENO) < 0)
+		strerror(errno);
+	if (child->fd_in)
+		close(child->fd_in);
+}
+
+void	child_labour(t_child *child, t_block_process *block, int len)
 {
 	// need to fill fd_in before here
 	if (child->i > 0)
@@ -191,10 +228,11 @@ void	child_labour(t_child *child, t_block_process *block, __unused int len)
 		close(child->fd[child->current][0]);
 		close(child->fd[child->current][1]);
 	}
-	
-	// r_in
-	// r_out
-	execute_cmd(block);
+
+	r_in(block, child);
+	// r_out(block)
+	if (block->argv[0])
+		execute_cmd(block);
 }
 
 void	sig_sig_signal(void)
@@ -215,7 +253,18 @@ void	wait_child(int len)
 	}
 }
 
-// make it simply work with execution of cmds to start with
+int	check_cmd_name(t_list *bp)
+{
+	t_block_process	*block;
+
+	block = (t_block_process *)bp->content;
+	if (block->files_count == 0)
+		return (0);
+	if (!ft_strcmp(block->argv[0],  block->files[0].file_name))
+		return (1);		
+	return (0);
+}
+
 void	executor(t_list *bp)
 {
 	t_child			child;
@@ -228,6 +277,12 @@ void	executor(t_list *bp)
 	while (++child.i < child.len)
 	{
 		block = (t_block_process *)bp->content;
+
+		if (check_cmd_name(bp))
+		{
+			block->argv++;
+		}		
+
 		if (pipe(child.fd[child.current]) == -1)
 			strerror(errno);
 		child.pid = fork();
@@ -247,7 +302,6 @@ void	executor(t_list *bp)
 	}
 	close(child.fd[1 - child.current][0]);
 	wait_child(child.len);
-
 }
 
 // int main(__unused int argc, __unused char **argv, __unused char **envp)
