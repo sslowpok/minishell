@@ -13,6 +13,12 @@
 
 # include "../libft/libft.h"
 
+# define REDIR_FROM		2 // <
+# define REDIR_TO		0 // >
+# define HEREDOC_FROM	3 // <<
+# define HEREDOC_TO		1 // >>
+
+
 // typedef int(*t_builtin_ptr)(t_list*, t_info*);
 
 typedef struct s_llist

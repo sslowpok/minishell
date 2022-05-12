@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_lexemes_to_bp.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 13:39:49 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/06 16:19:49 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/12 18:10:18 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,11 @@ void	ft_fill_redirect_info(t_block_process *block, t_list **cmd)
 
 	i = 0;
 	tmp = *cmd;
+	if (block->files_count == 0)
+	{
+		block->files = NULL;
+		return ;
+	}
 	files = malloc(sizeof(t_file_info) * block->files_count);
 	if (!files)
 		return ;

@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 16:12:49 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/12 17:21:11 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/12 18:23:30 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,9 +190,13 @@ void	execute_cmd(t_block_process *block)
 	// total_free(cmd_flags);
 }
 
-void	r_in(t_block_process *block, t_child *child)
+void	r_in(t_block_process *block, __unused t_child *child)
 {
+
 	t_file_info	*tmp;
+	int		fd;
+
+	fd = 0;
 
 
 	tmp = block->files;
@@ -200,16 +204,50 @@ void	r_in(t_block_process *block, t_child *child)
 	// printf("filename = %s\n", tmp->file_name);
 	// printf("cmd name = %s\n", block->argv[0]);
 
-	if (tmp->redirect_type == 2) // "<"
-		child->fd_in = open(tmp->file_name, O_RDONLY);
-	else if (tmp->redirect_type == 1) // "<<"
-		child->fd_in = open(tmp->file_name, O_RDONLY);
-	if (child->fd_in < 0)
+	if (tmp)
+		printf("redir = %d\n", block->files->redirect_type);
+//	printf("Dfghjk");
+	if (block->files)
+	{
+		if (tmp->redirect_type == REDIR_FROM) // "<"
+			fd = open(tmp->file_name, O_RDONLY);
+		else if (tmp->redirect_type == HEREDOC_FROM) // "<<"
+			fd = open(tmp->file_name, O_RDONLY);
+	}
+	if (fd < 0)
 		strerror(errno);
-	if (child->fd_in && dup2(child->fd_in, STDIN_FILENO) < 0)
+	if (fd != 0 && dup2(fd, STDIN_FILENO) < 0)
 		strerror(errno);
-	if (child->fd_in)
-		close(child->fd_in);
+	if (fd)
+		close(fd);
+}
+
+// > = 0
+// >> = 1
+
+void	r_out(t_block_process *block, t_child *child)
+{
+	t_file_info	*tmp;
+	int	fd;
+
+	fd = 0;
+
+	tmp = block->files;
+	if (tmp)
+	{
+		
+		if (tmp->redirect_type == REDIR_TO) // ">"
+			fd = open(tmp->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		else if (tmp->redirect_type == HEREDOC_TO) // ">>"
+			fd = open(tmp->file_name, O_WRONLY | O_APPEND | O_CREAT, 0644);
+	}
+	if (fd < 0)
+		strerror(errno);
+	if (fd != 0 && dup2(fd, STDOUT_FILENO) < 0)
+		strerror(errno);
+	if (fd)
+		close(child->fd_out);
+
 }
 
 void	child_labour(t_child *child, t_block_process *block, int len)
@@ -221,7 +259,7 @@ void	child_labour(t_child *child, t_block_process *block, int len)
 			strerror(errno);
 		close(child->fd[1 - child->current][0]);
 	}
-	if (child->fd_out != 0 && child->i < len - 1)
+	if (child->fd_out != 1 && child->i < len - 1)
 	{
 		if (dup2(child->fd[child->current][1], STDOUT_FILENO) < 0)
 			strerror(errno);
@@ -229,8 +267,11 @@ void	child_labour(t_child *child, t_block_process *block, int len)
 		close(child->fd[child->current][1]);
 	}
 
-	r_in(block, child);
-	// r_out(block)
+	// r_in(block, child);
+
+
+
+	// r_out(block, child);
 	if (block->argv[0])
 		execute_cmd(block);
 }
@@ -287,8 +328,8 @@ void	executor(t_list *bp)
 			strerror(errno);
 		child.pid = fork();
 		if (child.pid)
-			// sig_sig_signal();
 			;
+			// waitpid(child.pid, NULL, 0);
 		else if (child.pid < 0)
 			strerror(errno);
 		else if (child.pid == 0)
