@@ -23,7 +23,8 @@ SRC_LIST	=	main.c \
 				envp_parser_utils.c \
 				envp_list_utils.c \
 				parser_check_commands.c \
-				parser_deal_quotes.c
+				parser_deal_quotes.c \
+				builtins.c
 
 OBJ_LIST	=	$(SRC:%.c=%.o)
 

@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 13:39:49 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/13 17:26:42 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/14 15:39:36 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,10 +119,8 @@ int	ft_lexeme_to_bp(t_list **bp, t_list **lexemes, t_llist *envp)
 		{
 			ft_lstadd_back(&cmd, ft_lstnew((void *)ft_pop_front(&lex)));
 			if (!lex)
-			{
 				if (ft_create_bp_list(bp, &cmd, envp))
 					return (1);
-			}
 		}
 	}
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/13 17:23:48 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/14 16:08:47 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,17 +97,19 @@ int	main(int argc, char __unused **argv, char __unused **envp)
 		// }
 		ft_lexeme_to_bp(&bp, &lexems, info.envp_list);
 		t_list	*tmp = bp;
-		printf("size: %i\n", ft_lstsize(tmp));
+		//printf("size: %i\n", ft_lstsize(tmp));
 		while (tmp)
 		{
 			int	i;
 			i = 0;
 			t_block_process	*block = (t_block_process *)tmp->content;
-			while (block->argv[i])
+			/*while (block->argv[i])
 			{
 				printf("%i) %s\n", i, block->argv[i]);
 				i++;
-			}
+			}*/
+			if (!ft_strcmp(block->argv[0], "echo"))
+				ft_echo(block->argv);
 			tmp = tmp->next;
 		}
 		ft_free_block_process(&bp);
