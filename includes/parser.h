@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 18:42:57 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/14 15:59:51 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/14 17:25:24 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,5 @@ int		ft_check_redirect_error(t_list **cmd);
 
 /*File parser_deal_quotes.c*/
 int		ft_delete_quotes(t_list **cmd, t_llist *envp);
-
-int		ft_echo(char **args);
 
 #endif

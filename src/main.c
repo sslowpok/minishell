@@ -6,13 +6,14 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/14 16:08:47 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/14 17:30:07 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include "../includes/parser.h"
 #include "../includes/envp_parser.h"
+#include "../includes/builtins.h"
 
 void	init_res_words(t_info *info)
 {
@@ -110,6 +111,8 @@ int	main(int argc, char __unused **argv, char __unused **envp)
 			}*/
 			if (!ft_strcmp(block->argv[0], "echo"))
 				ft_echo(block->argv);
+			if (!ft_strcmp(block->argv[0], "env"))
+				ft_env(block->argv, info.envp_list);
 			tmp = tmp->next;
 		}
 		ft_free_block_process(&bp);

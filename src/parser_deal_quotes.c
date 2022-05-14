@@ -6,12 +6,13 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 15:27:34 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/13 17:25:17 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/14 17:29:35 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include "../includes/parser.h"
+#include "../includes/builtins.h"
 
 // TO BE ADDED: $? AND $$
 
