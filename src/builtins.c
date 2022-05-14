@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/14 15:41:25 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/14 16:12:45 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/14 16:26:36 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,23 @@ The echo utility writes any specified operands, separated by single blank
 	 (` ') characters and followed by a newline (`\n') character, to the stan-
 	 dard output.
 */
+int	ft_echo_help(char **args, int *j)
+{
+	int	i;
 
-/*echo 'lol' kek 'chebureck'*/
+	i = *j;
+	while (args[i])
+	{
+		if (printf("%s", args[i++]) < 0)
+			return (1);
+		if (args[i])
+			if (printf(" ") < 0)
+				return (1);
+	}
+	*j = i;
+	return (0);
+}
+
 int	ft_echo(char **args)
 {
 	int	i;
@@ -30,16 +45,17 @@ int	ft_echo(char **args)
 		flag = 1;
 		i++;
 	}
-	while (args[i])
-	{
-		printf("%s", args[i]);
-		i++;
-		if (args[i])
-			printf(" ");
-	}
+	if (ft_echo_help(args, &i))
+		return (1);
 	if (flag == 1 && i > 2)
-		printf("%%");
+	{
+		if (printf("%%") < 0)
+			return (1);
+	}
 	else if (flag != 1)
-		printf("\n");
+	{
+		if (printf("\n") < 0)
+			return (1);
+	}
 	return (0);
 }
