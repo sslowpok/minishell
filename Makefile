@@ -25,7 +25,9 @@ SRC_LIST	=	main.c \
 				parser_check_commands.c \
 				parser_deal_quotes.c \
 				builtins_echo.c \
-				builtins_env.c
+				builtins_env.c \
+				builtins_pwd.c
+
 
 OBJ_LIST	=	$(SRC:%.c=%.o)
 

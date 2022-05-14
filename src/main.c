@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/14 17:30:07 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/14 18:03:56 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,12 @@ char	*ft_readline(void)
 Each element of bp has structure t_block_process as content*/
 int	main(int argc, char __unused **argv, char __unused **envp)
 {
-	t_info	info;
-	char	*line;
-	t_list	*lexems;
-	t_list	*bp;
+	t_info		info;
+	char		*line;
+	t_list		*lexems;
+	t_list		*bp;
 
+	global.last_return = 0;
 	bp = NULL;
 	lexems = NULL;
 	if (argc != 1)
@@ -113,6 +114,8 @@ int	main(int argc, char __unused **argv, char __unused **envp)
 				ft_echo(block->argv);
 			if (!ft_strcmp(block->argv[0], "env"))
 				ft_env(block->argv, info.envp_list);
+			if (!ft_strcmp(block->argv[0], "pwd"))
+				ft_pwd(block->argv, info.envp_list);
 			tmp = tmp->next;
 		}
 		ft_free_block_process(&bp);

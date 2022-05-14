@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/14 15:41:25 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/14 17:30:36 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/14 18:15:52 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,32 +30,34 @@ int	ft_echo_help(char **args, int *j)
 				return (1);
 	}
 	*j = i;
+	global.last_return = 0;
 	return (0);
 }
 
-int	ft_echo(char **args)
+void	ft_echo(char **args)
 {
 	int	i;
 	int	flag;
 
 	i = 1;
 	flag = 0;
+	global.last_return = 1;
 	if (args[1] && !ft_strcmp(args[1], "-n"))
 	{
 		flag = 1;
 		i++;
 	}
 	if (ft_echo_help(args, &i))
-		return (1);
+		return ;
 	if (flag == 1 && i > 2)
 	{
 		if (printf("%%") < 0)
-			return (1);
+			return ;
 	}
 	else if (flag != 1)
 	{
 		if (printf("\n") < 0)
-			return (1);
+			return ;
 	}
-	return (0);
+	global.last_return = 0;
 }

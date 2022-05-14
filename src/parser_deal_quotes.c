@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 15:27:34 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/14 17:29:35 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/14 18:41:56 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,20 @@ static char	*ft_deal_single_quote(char *str, int *j, char *to_copy)
 	return (str);
 }
 
+static char	*ft_dollar_question(void)
+{
+	char	*return_val;
+	char	*en;
+	int		k;
+
+	en = ft_strdup("");
+	k = 0;
+	return_val = ft_itoa(global.last_return);
+	while (return_val[k])
+		en = ft_strjoin_mod(en, return_val[k++]);
+	return (en);
+}
+
 /*
 Create new string env, which contains all symbols from to_copy
 (from $ to $ 
@@ -94,9 +108,14 @@ static char	*ft_check_dollar(char *str, int *j, char *to_copy, t_llist *envp)
 	int		i;
 	char	*val;
 
-	i = *j;
 	en = ft_strdup("");
+	i = *j;
 	i++;
+	if (to_copy[i] == '?')
+	{
+		*j = ++i;
+		return (ft_strjoin(str, ft_dollar_question()));
+	}
 	while (to_copy[i] != 34 && to_copy[i] != 39 && \
 	to_copy[i] && to_copy[i] != '$')
 	{
@@ -169,7 +188,7 @@ int	ft_delete_quotes(t_list **cmd, t_llist *envp)
 			if (((char *)t->content)[i] == '$' && ((char *)t->content)[i + 1])
 				str = ft_check_dollar(str, &i, (char *)t->content, envp);
 			if ((((char *)t->content)[i] && ((char *)t->content)[i] != 34 && \
-			((char *)t->content)[i] != 39) || \
+			((char *)t->content)[i] != 39 && ((char *)t->content)[i] != '$') || \
 			(((char *)t->content)[i] == '$' && !((char *)t->content)[i + 1]))
 				str = ft_strjoin_mod(str, ((char *)t->content)[i++]);
 		}

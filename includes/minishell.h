@@ -44,6 +44,17 @@ typedef struct s_block_process
 	int			argc;
 }	t_block_process;
 
+typedef struct s_global
+{
+	char		**local_envp;
+	t_list		*block_process; // content - t_block_process
+	// 
+	// t_command	*cmd;
+	int			last_return;
+
+}		t_global;
+
+t_global	global;
 void	pipex(int argc, char **argv, char **envp);
 
 #endif
