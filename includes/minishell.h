@@ -48,6 +48,7 @@ typedef struct s_global
 {
 	char		**local_envp;
 	t_list		*block_process; // content - t_block_process
+	t_llist		*envp_list;
 	// 
 	// t_command	*cmd;
 	int			last_return;
