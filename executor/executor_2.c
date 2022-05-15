@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 16:12:49 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/15 14:39:55 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/15 15:28:51 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,14 +163,14 @@ void	execute_cmd(t_block_process *block)
 	char	**paths;
 	char	*cmd;
 
-	printf("trying to execute %s\n", block->argv[0]);
+	// printf("trying to execute %s\n", block->argv[0]);
 
 	paths = get_paths(global.local_envp);
 	if (!paths)
 		strerror(errno);
 	cmd = make_cmd(paths, block->argv);
 
-	printf("cmd = %s\n", block->argv[0]);
+	// printf("cmd = %s\n", block->argv[0]);
 
 	if (execve(cmd, block->argv, global.local_envp) < 0)
 		strerror(errno);
@@ -222,13 +222,14 @@ void	r_out(t_block_process *block, t_child *child)
 
 void	child_labour(t_child *child, t_block_process *block, int len)
 {
+	// need to fill fd_in before here
 	if (child->i > 0)
 	{
 		if (dup2(child->fd[1 - child->current][0], STDIN_FILENO) < 0)
 			strerror(errno);
 		close(child->fd[1 - child->current][0]);
 	}
-	if (child->i < len - 1)
+	if (child->fd_out != 0 && child->i < len - 1)
 	{
 		if (dup2(child->fd[child->current][1], STDOUT_FILENO) < 0)
 			strerror(errno);
@@ -237,7 +238,7 @@ void	child_labour(t_child *child, t_block_process *block, int len)
 	}
 
 	r_in(block, child);
-	r_out(block, child);
+	// r_out(block)
 	if (block->argv[0])
 		execute_cmd(block);
 }
@@ -272,7 +273,7 @@ void	executor(t_list *bp)
 	t_block_process	*block;
 
 	child.fd_in = 0;
-	child.fd_out = 0;
+	child.fd_out = 1;
 	init_child(&child, bp);
 
 	while (++child.i < child.len)
@@ -280,7 +281,7 @@ void	executor(t_list *bp)
 		block = (t_block_process *)bp->content;
 
 		if (check_cmd_name(bp))
-			block->argv++;
+			block->argv++;	
 
 		if (pipe(child.fd[child.current]) == -1)
 			strerror(errno);
