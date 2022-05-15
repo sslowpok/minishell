@@ -6,102 +6,97 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 18:21:08 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/06 16:17:33 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/13 17:23:30 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/parser.h"
-/*
-34 - Double-Quotes
-39 - Single-Quotes
-*/
-int	ft_check_quotes(char *line)
-{
-	int	i;
 
-	i = 0;
-	while (line[i])
+char	*ft_is_quote(char *s, char quote, int *j, char *str)
+{
+	int		i;
+
+	i = *j;
+	s = ft_strjoin_mod(s, str[i]);
+	i++;
+	while (str[i] != quote)
 	{
-		if (line[i] == 34)
-		{
-			i++;
-			while (line[i] && line[i] != 34)
-				i++;
-			if (!line[i])
-				return (ft_print_parse_error(ERR_DOUBLE_QUOTES));
-		}
-		if (line[i] == 39)
-		{
-			i++;
-			while (line[i] && line[i] != 39)
-				i++;
-			if (!line[i])
-				return (ft_print_parse_error(ERR_SINGLE_QUOTES));
-		}
+		s = ft_strjoin_mod(s, str[i]);
 		i++;
 	}
-	return (0);
+	s = ft_strjoin_mod(s, str[i]);
+	i++;
+	*j = i;
+	return (s);
 }
 
-/*
-This help function prevents splitting inside quotes.
-*/
-void	ft_strtok_help(char **stock)
+char	*ft_char_is_space(t_list **lexeme, int *j, char *s, char *str)
 {
-	if (**stock == '\'')
+	int		i;
+
+	i = *j;
+	if (ft_strlen(s) != 0)
 	{
-		(*stock)++;
-		while (**stock != '\'')
-			(*stock)++;
+		ft_lstadd_back(lexeme, ft_lstnew((void *)ft_strdup(s)));
+		free(s);
+		s = ft_strdup("");
 	}
-	if (**stock == '"')
-	{
-		(*stock)++;
-		while (**stock != '"')
-			(*stock)++;
-	}
+	i++;
+	while (ft_isspace(str[i]))
+		i++;
+	*j = i;
+	return (s);
 }
 
-/*
-https://opensource.apple.com/source/Libc/Libc-167/string.subproj/
-strsep.c.auto.html
-*/
-/*
-1) If str exists, copy its content to stock.
-ptr = stock.
-2) Iterate throught stock.
-- if given string has quotes, function ft_strtok_help skips them 
-  (we do not need split content inside quotes)
-- if symbol in string is equal to given delimeter => replace delimeter with '\0'
-3) Return pointer to the first element in stock that is not equal to delimeter.
-*/
-char	*ft_strtok(char *str, const char delim)
+char	*ft_char_is_spec(t_list **lexeme, int *j, char *s, char *str)
 {
-	static char		*stock = NULL;
-	char			*ptr;
-	int				flg;
+	int		i;
 
-	flg = 0;
-	ptr = NULL;
-	if (str != NULL)
-		stock = ft_strdup(str);
-	while (*stock != '\0')
+	i = *j;
+	if (ft_strlen(s) != 0)
 	{
-		if (flg == 0 && *stock != delim)
-		{
-			flg = 1;
-			ptr = stock;
-		}
-		ft_strtok_help(&stock);
-		if (flg == 1 && *stock == delim)
-		{
-			*stock = '\0';
-			stock++;
-			break ;
-		}
-		stock++;
+		ft_lstadd_back(lexeme, ft_lstnew((void *)ft_strdup(s)));
+		free(s);
 	}
-	return (ptr);
+	s = ft_strdup("");
+	s = ft_strjoin_mod(s, str[i++]);
+	if (str[i] && str[i] == str[i - 1] && ft_strchr("><", str[i]) != NULL)
+		s = ft_strjoin_mod(s, str[i++]);
+	ft_lstadd_back(lexeme, ft_lstnew((void *)ft_strdup(s)));
+	free(s);
+	s = ft_strdup("");
+	*j = i;
+	return (s);
+}
+
+// put str[i] to s till we meet space or char like pipe or redirect
+// pipes and redirects are separate lexemes
+t_list	*ft_line_to_lexemes(char *str)
+{
+	t_list	*lex;
+	int		i;
+	char	*s;
+
+	lex = NULL;
+	i = 0;
+	s = ft_strdup("");
+	while (str[i])
+	{
+		if (str[i] == 39 || str[i] == 34)
+			s = ft_is_quote(s, str[i], &i, str);
+		if (str[i] && ft_isspace(str[i]))
+			s = ft_char_is_space(&lex, &i, s, str);
+		if (str[i] && ft_strchr("><|", str[i]) != NULL)
+			s = ft_char_is_spec(&lex, &i, s, str);
+		if (str[i] && str[i] != 39 && str[i] != 34 && !ft_isspace(str[i]) \
+		&& ft_strchr("><|", str[i]) == NULL)
+			s = ft_strjoin_mod(s, str[i++]);
+	}
+	if (s && ft_strlen(s) != 0)
+		ft_lstadd_back(&lex, ft_lstnew((void *)ft_strdup(s)));
+	free(s);
+	s = NULL;
+	return (lex);
 }
 
 /*
@@ -110,25 +105,11 @@ char	*ft_strtok(char *str, const char delim)
 */
 int	ft_lexer(char *line, t_list **lex)
 {
-	char	*token;
 	t_list	*lexems;
-//	char 	*str;
 
 	lexems = NULL;
-//	str = NULL;
 	if (ft_check_quotes(line))
 		return (1);
-	token = ft_strtok(line, ' ');
-	while (token != NULL)
-	{
-		//str = ft_strdup((const char *)token);
-		if (!lexems)
-			lexems = ft_lstnew((void *)token);
-		else
-			ft_lstadd_back(&lexems, ft_lstnew((void *)token));
-	//	free(str);
-		token = ft_strtok(NULL, ' ');
-	}
-	*lex = lexems;
+	*lex = ft_line_to_lexemes(line);
 	return (0);
 }

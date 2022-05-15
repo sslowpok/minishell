@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 18:42:57 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/06 19:12:23 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/15 12:42:20 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@
 # define ERR_SINGLE_QUOTES  "unmatched single quotes\n"
 # define ERR_DOUBLE_QUOTES  "unmatched double quotes\n"
 
+char	*ft_strjoin_mod(char const *s1, char ch);
+
 /*File parser_lexer.c*/
 int		ft_lexer(char *line, t_list **lex);
 
@@ -40,6 +42,9 @@ int		ft_is_redirect(char	*str);
 /*File parser_utils1.c*/
 char	*ft_pop_front(t_list **head);
 void	ft_delete_list(t_list **head);
+int		ft_isspace(char s);
+int		ft_check_quotes(char *line);
+char	*ft_strjoin_mod(char const *s1, char ch);
 
 /*File parser_block_process_clear.c*/
 void	ft_free_struct_bp(t_block_process *bp);

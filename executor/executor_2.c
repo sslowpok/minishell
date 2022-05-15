@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 16:12:49 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/12 17:21:11 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/15 14:39:55 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,23 +104,6 @@ char	*make_cmd(char **paths, char **cmd_flags)
 	return (cmd);
 }
 
-// void	execute_cmd(char **args) // "ls" "-la" 
-// {
-
-// 	char	**paths;
-// 	char	*cmd;
-
-// 	paths = get_paths(global.local_envp);
-// 	if (!paths)
-// 		error(errno, "Malloc: ");
-// 	cmd = args[0];
-// 	printf("cmd = %s\n", cmd);
-// 	if (execve(cmd, args, global.local_envp) < 0)
-// 		strerror(errno);
-// 	// total_free(paths);
-// 	// total_free(cmd_flags);
-// }
-
 int	open_file(t_llist *fd)
 {
 	int	return_fd;
@@ -180,10 +163,15 @@ void	execute_cmd(t_block_process *block)
 	char	**paths;
 	char	*cmd;
 
+	printf("trying to execute %s\n", block->argv[0]);
+
 	paths = get_paths(global.local_envp);
 	if (!paths)
 		strerror(errno);
 	cmd = make_cmd(paths, block->argv);
+
+	printf("cmd = %s\n", block->argv[0]);
+
 	if (execve(cmd, block->argv, global.local_envp) < 0)
 		strerror(errno);
 	// total_free(paths);
@@ -200,9 +188,9 @@ void	r_in(t_block_process *block, t_child *child)
 	// printf("filename = %s\n", tmp->file_name);
 	// printf("cmd name = %s\n", block->argv[0]);
 
-	if (tmp->redirect_type == 2) // "<"
+	if (tmp->redirect_type == REDIR_FROM) // "<"
 		child->fd_in = open(tmp->file_name, O_RDONLY);
-	else if (tmp->redirect_type == 1) // "<<"
+	else if (tmp->redirect_type == HEREDOC_FROM) // "<<"
 		child->fd_in = open(tmp->file_name, O_RDONLY);
 	if (child->fd_in < 0)
 		strerror(errno);
@@ -212,16 +200,35 @@ void	r_in(t_block_process *block, t_child *child)
 		close(child->fd_in);
 }
 
+void	r_out(t_block_process *block, t_child *child)
+{
+	t_file_info	*tmp;
+
+	tmp = block->files;
+
+		if (tmp->redirect_type == REDIR_TO) // ">"
+		{
+			child->fd_out = open(tmp->file_name, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+		}
+		else if (tmp->redirect_type == HEREDOC_TO) // ">>"
+			child->fd_out = open(tmp->file_name, O_WRONLY | O_APPEND | O_CREAT, 0644);
+		if (child->fd_out < 0)
+			strerror(errno);
+		if (child->fd_out && dup2(child->fd_out, STDOUT_FILENO) < 0)
+			strerror(errno);
+		if (child->fd_out)
+			close(child->fd_out);
+}
+
 void	child_labour(t_child *child, t_block_process *block, int len)
 {
-	// need to fill fd_in before here
 	if (child->i > 0)
 	{
 		if (dup2(child->fd[1 - child->current][0], STDIN_FILENO) < 0)
 			strerror(errno);
 		close(child->fd[1 - child->current][0]);
 	}
-	if (child->fd_out != 0 && child->i < len - 1)
+	if (child->i < len - 1)
 	{
 		if (dup2(child->fd[child->current][1], STDOUT_FILENO) < 0)
 			strerror(errno);
@@ -230,15 +237,9 @@ void	child_labour(t_child *child, t_block_process *block, int len)
 	}
 
 	r_in(block, child);
-	// r_out(block)
+	r_out(block, child);
 	if (block->argv[0])
 		execute_cmd(block);
-}
-
-void	sig_sig_signal(void)
-{
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
 }
 
 void	wait_child(int len)
@@ -271,7 +272,7 @@ void	executor(t_list *bp)
 	t_block_process	*block;
 
 	child.fd_in = 0;
-	child.fd_out = 1;
+	child.fd_out = 0;
 	init_child(&child, bp);
 
 	while (++child.i < child.len)
@@ -279,9 +280,7 @@ void	executor(t_list *bp)
 		block = (t_block_process *)bp->content;
 
 		if (check_cmd_name(bp))
-		{
 			block->argv++;
-		}		
 
 		if (pipe(child.fd[child.current]) == -1)
 			strerror(errno);

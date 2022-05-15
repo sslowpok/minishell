@@ -6,13 +6,14 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/12 17:19:48 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/15 13:08:12 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include "../includes/parser.h"
 #include "../includes/envp_parser.h"
+#include "../includes/builtins.h"
 
 void	init_res_words(t_info *info)
 {
@@ -57,13 +58,14 @@ char	*ft_readline(void)
 
 /* bp - list with block_processes. 
 Each element of bp has structure t_block_process as content*/
-int	main(int argc, char __unused **argv, char **envp)
+int	main(int argc, char __unused **argv, char __unused **envp)
 {
-	t_info	info;
-	char	*line;
-	t_list	*lexems;
-	t_list	*bp;
+	t_info		info;
+	char		*line;
+	t_list		*lexems;
+	t_list		*bp;
 
+	global.last_return = 0;
 	bp = NULL;
 	lexems = NULL;
 	if (argc != 1)
@@ -71,6 +73,7 @@ int	main(int argc, char __unused **argv, char **envp)
 		return (1);
 	}
 	init_info(&info, envp);
+	global.local_envp = envp;
 	/*char	*lol = ft_get_value_envp(&info.envp_list, "USER");
 	if (!lol)
 		printf("No\n");
@@ -87,69 +90,37 @@ int	main(int argc, char __unused **argv, char **envp)
 	while (1)
 	{
 		line = ft_readline();
-		if (ft_strlen(line) == 0)
-			continue ;
 		if (ft_lexer(line, &lexems))
 			return (1);
-		/*t_list *lex = lexems;
-		while (lex)
-		{
-			printf("%s\n", (char *)lex->content);
-			lex = lex->next;
-		}*/
+		// t_list *lex = lexems;
+		// while (lex)
+		// {
+		// 	printf("lex: %s\n", (char *)lex->content);
+		// 	lex = lex->next;
+		// }
 		ft_lexeme_to_bp(&bp, &lexems, info.envp_list);
-
-// t_list	*tmp = bp;
-// 		printf("size: %i\n", ft_lstsize(tmp));
-// 		while (tmp)
-// 		{
-// 			int	i;
-// 			i = 0;
-// 			t_block_process	*block = (t_block_process *)tmp->content;
-// 			while (block->argv[i])
-// 			{
-// 				printf("%i) %s\n", i, block->argv[i]);
-// 				i++;
-// 			}
-// 			// while (i < block->files_count)
-// 			// {
-// 			// 	printf("redir: %i, file: %s\n", block->files[i].redirect_type, block->files[i].file_name);
-// 			// 	i++;
-// 			// }
-// 			tmp = tmp->next;
-// 		}
-		
-		// ls -la | grep "lol"
-// 			имеем bp - тип t_list, content - структуры t_block_process
-// 		typedef struct s_block_process
-// {
-// 	char		**argv; // "ls" "-la" ; "grep" "lol"
-// 	t_file_info	*files;	// {0, filename}
-// 	int			files_count;	// мб кол-во редиректов
-// 	int			argc;	// хз че это
-// }	t_block_process;
-
-	t_block_process	*block;
-
-	block = (t_block_process *)bp->content;
-
-	// printf("argv[0] = %s\n", block->argv[0]);
-	// printf("argv[1] = %s\n", block->argv[1]);
-
-	// char	*a[3];
-	// a[0] = "ls";
-	// a[1] = "-l";
-	// a[2] = "\0";
-
-	
-	global.local_envp = envp;
-// local envp можно сделать листом, Диана говорит, с ним удобнее работать :)
-
-
-	executor(bp);
-// printf("was here\n");
-		
-		ft_free_block_process(&bp);		
+		t_list	*tmp = bp;
+		//printf("size: %i\n", ft_lstsize(tmp));
+		while (tmp)
+		{
+			int	i;
+			i = 0;
+			t_block_process	*block = (t_block_process *)tmp->content;
+			/*while (block->argv[i])
+			{
+				printf("%i) %s\n", i, block->argv[i]);
+				i++;
+			}*/
+			if (!ft_strcmp(block->argv[0], "echo"))
+				ft_echo(block->argv);
+			if (!ft_strcmp(block->argv[0], "env"))
+				ft_env(block->argv, info.envp_list);
+			if (!ft_strcmp(block->argv[0], "pwd"))
+				ft_pwd(block->argv, info.envp_list);
+			tmp = tmp->next;
+		}
+		executor (bp);
+		ft_free_block_process(&bp);
 		free(line);
 	}
 	return (0);

@@ -14,7 +14,10 @@ SRC	=	parser/envp_list_utils.c \
 		parser/parser_redir_utils.c \
 		parser/parser_utils1.c \
 		src/main.c \
-		executor/executor_2.c
+		executor/executor_2.c \
+		builtins/builtins_echo.c \
+		builtins/builtins_env.c \
+		builtins/builtins_pwd.c
 
 HEADERS	=	includes/envp_parser.h \
 			includes/error.h \

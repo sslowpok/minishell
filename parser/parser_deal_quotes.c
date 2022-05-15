@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parser_deal_quotes.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
+/*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 15:27:34 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/08 17:46:40 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/14 18:41:56 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include "../includes/parser.h"
+#include "../includes/builtins.h"
 
 // TO BE ADDED: $? AND $$
 
@@ -43,7 +44,8 @@ $
 m0
 
 9) echo "m$PATH"
-m/Users/coverand/.brew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki:/opt/X11/bin
+m/Users/coverand/.brew/bin:/usr/local/bin:/usr/bin
+:/bin:/usr/sbin:/sbin:/usr/local/munki:/opt/X11/bin
 
 10) echo lol'meow', echo lol"meow"
 lolmeow
@@ -52,34 +54,11 @@ lolmeow
 /*
 1) If we have no quotes -> check whether there is $
 - if there is no symbols after $ -> str = [everything before $ sign] + [$]
-- if there is smth after $  ->  str = [everything before $ sign] + [viriable from env]
+- if there is smth after $  ->  
+str = [everything before $ sign] + [viriable from env]
 2) If we have single quotes -> just get rid of the quotes
 3) If we have double quotes -> get rid of quotes and go to p 1.
 */
-
-static char	*ft_strjoin_mod(char const *s1, char ch)
-{
-	int		len1;
-	char	*str;
-	int		i;
-
-	/*if (!s1)
-		return (0);*/
-	i = 0;
-	len1 = ft_strlen(s1);
-	str = malloc(sizeof(*str) * (len1 + 1) + 1);
-	if (str == 0)
-		return (0);
-	while (i < len1)
-	{
-		str[i] = s1[i];
-		i++;
-	}
-	str[i] = ch;
-	i++;
-	str[i] = '\0';
-	return (str);
-}
 
 /*Put every symbol from to_copy to str till closing single quote*/
 static char	*ft_deal_single_quote(char *str, int *j, char *to_copy)
@@ -96,6 +75,20 @@ static char	*ft_deal_single_quote(char *str, int *j, char *to_copy)
 	i++;
 	*j = i;
 	return (str);
+}
+
+static char	*ft_dollar_question(void)
+{
+	char	*return_val;
+	char	*en;
+	int		k;
+
+	en = ft_strdup("");
+	k = 0;
+	return_val = ft_itoa(global.last_return);
+	while (return_val[k])
+		en = ft_strjoin_mod(en, return_val[k++]);
+	return (en);
 }
 
 /*
@@ -115,9 +108,14 @@ static char	*ft_check_dollar(char *str, int *j, char *to_copy, t_llist *envp)
 	int		i;
 	char	*val;
 
-	i = *j;
 	en = ft_strdup("");
+	i = *j;
 	i++;
+	if (to_copy[i] == '?')
+	{
+		*j = ++i;
+		return (ft_strjoin(str, ft_dollar_question()));
+	}
 	while (to_copy[i] != 34 && to_copy[i] != 39 && \
 	to_copy[i] && to_copy[i] != '$')
 	{
@@ -159,7 +157,20 @@ char *to_copy, t_llist *envp)
 	return (str);
 }
 
-int	ft_delete_quotes(t_list **cmd, t_llist __unused *envp)
+char	*ft_delete_quotes_help(char *str, int *j, t_list *t, t_llist *envp)
+{	
+	int	i;
+
+	i = *j;
+	if (((char *)t->content)[i] == 39)
+		str = ft_deal_single_quote(str, &i, (char *)t->content);
+	if (((char *)t->content)[i] == 34)
+		str = ft_deal_double_quote(str, &i, (char *)t->content, envp);
+	*j = i;
+	return (str);
+}
+
+int	ft_delete_quotes(t_list **cmd, t_llist *envp)
 {
 	char	*str;
 	t_list	*t;
@@ -172,23 +183,17 @@ int	ft_delete_quotes(t_list **cmd, t_llist __unused *envp)
 		str = ft_strdup("");
 		while (((char *)t->content)[i])
 		{
-			if (((char *)t->content)[i] == 39)
-				str = ft_deal_single_quote(str, &i, (char *)t->content);
-			if (((char *)t->content)[i] == 34)
-				str = ft_deal_double_quote(str, &i, (char *)t->content, envp);
+			if (((char *)t->content)[i] == 39 || ((char *)t->content)[i] == 34)
+				str = ft_delete_quotes_help(str, &i, t, envp);
 			if (((char *)t->content)[i] == '$' && ((char *)t->content)[i + 1])
 				str = ft_check_dollar(str, &i, (char *)t->content, envp);
 			if ((((char *)t->content)[i] && ((char *)t->content)[i] != 34 && \
-			((char *)t->content)[i] != 39) || \
+			((char *)t->content)[i] != 39 && ((char *)t->content)[i] != '$') || \
 			(((char *)t->content)[i] == '$' && !((char *)t->content)[i + 1]))
-			{
-				str = ft_strjoin_mod(str, ((char *)t->content)[i]);
-				i++;
-			}
+				str = ft_strjoin_mod(str, ((char *)t->content)[i++]);
 		}
 		t->content = (void *)ft_strdup(str);
 		free(str);
-		// printf("content: %s\n", (char *)t->content);
 		t = t->next;
 	}
 	return (0);
