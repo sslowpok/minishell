@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_check_commands.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 17:55:09 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/13 16:36:04 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/15 17:15:06 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,9 @@ int	ft_check_pipe_error(t_list *lexemes)
 		if (ft_is_redirect((char *)lexemes->content) != -1 && \
 		!ft_strcmp((const char *)lexemes->next->content, "|"))
 			return (ft_print_parse_error(PARSER_ERR_PIPE));
-		if (ft_is_redirect((char *)lexemes->next->content) != -1 && \
-		!ft_strcmp((const char *)lexemes->content, "|"))
-			return (ft_print_parse_error(PARSER_ERR_PIPE));
+		// if (ft_is_redirect((char *)lexemes->next->content) != -1 && \
+		// !ft_strcmp((const char *)lexemes->content, "|"))
+		// 	return (ft_print_parse_error(PARSER_ERR_PIPE));
 	}
 	return (0);
 }

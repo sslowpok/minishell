@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/15 13:08:12 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/15 17:41:02 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ int	main(int argc, char __unused **argv, char __unused **envp)
 	}
 	init_info(&info, envp);
 	global.local_envp = envp;
+	global.envp_list = info.envp_list;
 	/*char	*lol = ft_get_value_envp(&info.envp_list, "USER");
 	if (!lol)
 		printf("No\n");
@@ -99,26 +100,26 @@ int	main(int argc, char __unused **argv, char __unused **envp)
 		// 	lex = lex->next;
 		// }
 		ft_lexeme_to_bp(&bp, &lexems, info.envp_list);
-		t_list	*tmp = bp;
-		//printf("size: %i\n", ft_lstsize(tmp));
-		while (tmp)
-		{
-			int	i;
-			i = 0;
-			t_block_process	*block = (t_block_process *)tmp->content;
-			/*while (block->argv[i])
-			{
-				printf("%i) %s\n", i, block->argv[i]);
-				i++;
-			}*/
-			if (!ft_strcmp(block->argv[0], "echo"))
-				ft_echo(block->argv);
-			if (!ft_strcmp(block->argv[0], "env"))
-				ft_env(block->argv, info.envp_list);
-			if (!ft_strcmp(block->argv[0], "pwd"))
-				ft_pwd(block->argv, info.envp_list);
-			tmp = tmp->next;
-		}
+		// t_list	*tmp = bp;
+		// printf("size: %i\n", ft_lstsize(tmp));
+		// while (tmp)
+		// {
+		// 	int	i;
+		// 	i = 0;
+		// 	t_block_process	*block = (t_block_process *)tmp->content;
+		// 	/*while (block->argv[i])
+		// 	{
+		// 		printf("%i) %s\n", i, block->argv[i]);
+		// 		i++;
+		// 	}*/
+		// 	if (!ft_strcmp(block->argv[0], "echo"))
+		// 		ft_echo(block->argv);
+		// 	if (!ft_strcmp(block->argv[0], "env"))
+		// 		ft_env(block->argv, info.envp_list);
+		// 	if (!ft_strcmp(block->argv[0], "pwd"))
+		// 		ft_pwd(block->argv, info.envp_list);
+		// 	tmp = tmp->next;
+		// }
 		executor (bp);
 		ft_free_block_process(&bp);
 		free(line);

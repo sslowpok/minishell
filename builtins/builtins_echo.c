@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_echo.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/14 15:41:25 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/14 18:15:52 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/15 17:36:05 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	ft_echo_help(char **args, int *j)
 				return (1);
 	}
 	*j = i;
-	global.last_return = 0;
+	//global.last_return = 0;
 	return (0);
 }
 
@@ -59,5 +59,5 @@ void	ft_echo(char **args)
 		if (printf("\n") < 0)
 			return ;
 	}
-	global.last_return = 0;
+	// global.last_return = 0;
 }

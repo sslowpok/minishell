@@ -16,7 +16,7 @@
 // typedef int(*t_builtin_ptr)(t_list*, t_info*);
 
 # define REDIR_FROM		2 // <
-# define REDIR_TO		0 // >
+# define REDIR_TO		4 // >
 # define HEREDOC_FROM	3 // <<
 # define HEREDOC_TO		1 // >>
 
@@ -73,6 +73,7 @@ typedef struct s_global
 {
 	char		**local_envp;
 	t_list		*block_process; // content - t_block_process
+	t_llist		*envp_list;
 	// 
 	// t_command	*cmd;
 	int			last_return;

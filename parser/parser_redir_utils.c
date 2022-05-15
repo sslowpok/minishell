@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_redir_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 19:02:24 by coverand          #+#    #+#             */
-/*   Updated: 2022/04/28 19:02:41 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/15 16:19:53 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	ft_count_redirects(t_list **cmd)
 int	ft_is_redirect(char	*str)
 {
 	if (!ft_strncmp(str, ">", 2))
-		return (0);
+		return (4);
 	if (!ft_strncmp(str, ">>", 3))
 		return (1);
 	if (!ft_strncmp(str, "<", 2))

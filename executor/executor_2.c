@@ -6,11 +6,12 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 16:12:49 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/15 15:28:51 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/15 17:42:11 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+#include "../includes/builtins.h"
 
 void	error(int code, char *text)
 {
@@ -157,6 +158,23 @@ void	init_child(t_child *child, t_list *bp)
 	child->len = ft_lstsize(bp);
 }
 
+int	check_if_builtin(t_block_process *block)
+{
+	if (!ft_strcmp(block->argv[0], "echo"))
+	{
+		ft_echo(block->argv);
+		return (1);
+	}
+	if (!ft_strcmp(block->argv[0], "pwd"))
+	{
+		printf("return1: %i\n", global.last_return);
+		ft_pwd(block->argv, global.envp_list);
+		printf("return: %i\n", global.last_return);
+		return (1);
+	}
+	return (0);
+}
+
 void	execute_cmd(t_block_process *block)
 {
 
@@ -172,8 +190,11 @@ void	execute_cmd(t_block_process *block)
 
 	// printf("cmd = %s\n", block->argv[0]);
 
-	if (execve(cmd, block->argv, global.local_envp) < 0)
-		strerror(errno);
+	if (check_if_builtin(block) == 0)
+	{
+		if (execve(cmd, block->argv, global.local_envp) < 0)
+			strerror(errno);
+	}
 	// total_free(paths);
 	// total_free(cmd_flags);
 }
@@ -189,35 +210,64 @@ void	r_in(t_block_process *block, t_child *child)
 	// printf("cmd name = %s\n", block->argv[0]);
 
 	if (tmp->redirect_type == REDIR_FROM) // "<"
+	{
 		child->fd_in = open(tmp->file_name, O_RDONLY);
+
+	}
 	else if (tmp->redirect_type == HEREDOC_FROM) // "<<"
+	{
 		child->fd_in = open(tmp->file_name, O_RDONLY);
+	
+	}
 	if (child->fd_in < 0)
 		strerror(errno);
-	if (child->fd_in && dup2(child->fd_in, STDIN_FILENO) < 0)
-		strerror(errno);
 	if (child->fd_in)
-		close(child->fd_in);
+	{
+		printf("fghjdfgh");
+		if (dup2(child->fd_in, STDIN_FILENO) < 0)
+			strerror(errno);
+		close (child->fd_in);
+	}
+}
+
+void	cut_argv(t_block_process *block)
+{
+	int	i;
+
+	i = 0;
+	while (block->argv[i])
+	{
+		if (ft_strcmp(block->argv[i], block->files->file_name) == 0)
+			block->argv[i] = NULL;
+		i++;
+	}
 }
 
 void	r_out(t_block_process *block, t_child *child)
 {
 	t_file_info	*tmp;
 
+
 	tmp = block->files;
 
-		if (tmp->redirect_type == REDIR_TO) // ">"
-		{
-			child->fd_out = open(tmp->file_name, O_WRONLY | O_TRUNC | O_CREAT, 0644);
-		}
-		else if (tmp->redirect_type == HEREDOC_TO) // ">>"
-			child->fd_out = open(tmp->file_name, O_WRONLY | O_APPEND | O_CREAT, 0644);
-		if (child->fd_out < 0)
-			strerror(errno);
-		if (child->fd_out && dup2(child->fd_out, STDOUT_FILENO) < 0)
-			strerror(errno);
-		if (child->fd_out)
-			close(child->fd_out);
+	if (tmp->redirect_type == REDIR_TO) // ">"
+	{
+		child->fd_out = open(tmp->file_name, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+		cut_argv(block);
+	}
+	else if (tmp->redirect_type == HEREDOC_TO) // ">>"
+	{
+		child->fd_out = open(tmp->file_name, O_WRONLY | O_APPEND | O_CREAT, 0644);
+		cut_argv(block);
+	}
+	if (child->fd_out < 0)
+		strerror(errno);
+	if (child->fd_out && dup2(child->fd_out, STDOUT_FILENO) < 0)
+		strerror(errno);
+		// if (child->fd_out)
+		// 	close(child->fd_out);
+		// обрезать argv до редиректа
+	// cut_argv
 }
 
 void	child_labour(t_child *child, t_block_process *block, int len)
@@ -229,8 +279,9 @@ void	child_labour(t_child *child, t_block_process *block, int len)
 			strerror(errno);
 		close(child->fd[1 - child->current][0]);
 	}
-	if (child->fd_out != 0 && child->i < len - 1)
+	if (child->i < len - 1)
 	{
+		// printf("GDHFJHGSFDF");
 		if (dup2(child->fd[child->current][1], STDOUT_FILENO) < 0)
 			strerror(errno);
 		close(child->fd[child->current][0]);
@@ -238,7 +289,7 @@ void	child_labour(t_child *child, t_block_process *block, int len)
 	}
 
 	r_in(block, child);
-	// r_out(block)
+	r_out(block, child);
 	if (block->argv[0])
 		execute_cmd(block);
 }
@@ -273,7 +324,7 @@ void	executor(t_list *bp)
 	t_block_process	*block;
 
 	child.fd_in = 0;
-	child.fd_out = 1;
+	child.fd_out = 0;
 	init_child(&child, bp);
 
 	while (++child.i < child.len)
