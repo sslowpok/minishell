@@ -17,7 +17,8 @@ SRC	=	parser/envp_list_utils.c \
 		executor/executor_2.c \
 		builtins/builtins_echo.c \
 		builtins/builtins_env.c \
-		builtins/builtins_pwd.c
+		builtins/builtins_pwd.c \
+		builtins/ft_unset.c
 
 HEADERS	=	includes/envp_parser.h \
 			includes/error.h \

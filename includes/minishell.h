@@ -61,7 +61,7 @@ typedef struct s_child
 	int		i;
 	char	*path;
 
-	char	**envp;
+	// char	**envp;
 	
 	pid_t	pid;
 	int		fd[2][2];
@@ -80,7 +80,8 @@ typedef struct s_global
 
 }		t_global;
 
-void	executor(t_list *bp);
+// void	executor(t_list *bp);
+void	new_executor(t_list *bp);
 
 
 

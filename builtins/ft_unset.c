@@ -1,23 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtins.h                                         :+:      :+:    :+:   */
+/*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/14 17:25:17 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/16 14:48:16 by sslowpok         ###   ########.fr       */
+/*   Created: 2022/05/16 13:54:20 by sslowpok          #+#    #+#             */
+/*   Updated: 2022/05/16 17:13:09 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef BUILTINS_H
-# define BUILTINS_H
+#include "../includes/minishell.h"
+#include "../includes/builtins.h"
 
-# include "minishell.h"
-
-void	ft_echo(char **args);
-void	ft_env(char **args, t_llist *envp);
-void	ft_pwd(char **args, t_llist *envp);
-void	ft_unset(t_block_process *block, t_llist *list);
-
-#endif
+void	ft_unset(t_block_process *block, t_llist *list)
+{
+	// not done
+	printf("to delete: %s\n", block->argv[1]);
+	while (ft_strcmp(list->next->key,block->argv[1]))
+	{
+		printf("current key: %s\n", list->next->key);
+		list = list->next;
+	}
+	list->next = list->next->next;
+	global.last_return = 0;
+}

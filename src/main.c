@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/15 17:41:02 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/16 17:52:40 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ int	main(int argc, char __unused **argv, char __unused **envp)
 		// 		ft_pwd(block->argv, info.envp_list);
 		// 	tmp = tmp->next;
 		// }
-		executor (bp);
+		new_executor (bp);
 		ft_free_block_process(&bp);
 		free(line);
 	}
