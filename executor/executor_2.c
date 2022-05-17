@@ -6,12 +6,26 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 16:12:49 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/17 17:55:18 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/17 18:21:26 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include "../includes/builtins.h"
+
+void	handler(int code)
+{
+	if (code == SIGINT)
+		write(1, "\n", 5);
+	if (code == SIGQUIT)
+		write(1, "Quit: 3\n", 8);
+}
+
+void	sig_sig_signal(void)
+{
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+}
 
 void	error(int code, char *text)
 {
@@ -381,6 +395,7 @@ void	new_executor(t_list *bp)
 
 	while (++child.i < child.len)
 	{
+		
 		block = (t_block_process *)bp->content;
 		if (check_cmd_name(bp))
 			block->argv++;
@@ -393,6 +408,8 @@ void	new_executor(t_list *bp)
 			child.pid = fork();
 			if (child.pid == 0)
 				child_labour(&child, block, child.len);
+			else if (child.pid)
+				sig_sig_signal();
 			close(child.fd[1 - child.current][0]);
 			close(child.fd[child.current][1]);
 			child.current = 1 - child.current;

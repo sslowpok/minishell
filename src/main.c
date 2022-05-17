@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/16 17:52:40 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/17 18:19:39 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,8 @@ int	main(int argc, char __unused **argv, char __unused **envp)
 		printf("%s=%s\n", info.envp_list->key, info.envp_list->value);
 		info.envp_list = info.envp_list->next;
 	}*/
+	signal(SIGINT, handler);
+	signal(SIGQUIT, handler);
 	while (1)
 	{
 		line = ft_readline();
