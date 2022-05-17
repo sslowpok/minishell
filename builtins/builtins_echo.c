@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/14 15:41:25 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/15 17:36:05 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/17 17:43:27 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,13 @@ int	ft_echo_help(char **args, int *j)
 	i = *j;
 	while (args[i])
 	{
-		if (printf("%s", args[i++]) < 0)
-			return (1);
+		// if (printf("%s", args[i++]) < 0)
+		// 	return (1);
+		ft_putstr_fd(args[i++], global.builtin_fd);
 		if (args[i])
-			if (printf(" ") < 0)
-				return (1);
+			// if (printf(" ") < 0)
+				// return (1);
+			ft_putstr_fd(" ", global.builtin_fd);
 	}
 	*j = i;
 	//global.last_return = 0;
@@ -51,13 +53,15 @@ void	ft_echo(char **args)
 		return ;
 	if (flag == 1 && i > 2)
 	{
-		if (printf("%%") < 0)
-			return ;
+		// if (printf("%%") < 0)
+			// return ;
+		ft_putstr_fd("%%", global.builtin_fd);
 	}
 	else if (flag != 1)
 	{
-		if (printf("\n") < 0)
-			return ;
+		// if (printf("\n") < 0)
+			// return ;
+		ft_putstr_fd("\n", global.builtin_fd);
 	}
 	// global.last_return = 0;
 }

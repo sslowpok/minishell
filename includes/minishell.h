@@ -77,6 +77,7 @@ typedef struct s_global
 	// 
 	// t_command	*cmd;
 	int			last_return;
+	int			builtin_fd;
 
 }		t_global;
 

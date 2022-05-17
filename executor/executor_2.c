@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 16:12:49 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/16 18:11:31 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/17 17:55:18 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,18 +48,20 @@ char	**paths_fill(char **paths)
 	return (paths);
 }
 
-char	**get_paths(char **envp)
+char	**get_paths()
 {
 	char	**paths;
+	t_llist	*list;
 
-	while (*envp)
+	list = global.envp_list;
+	while (list)
 	{
-		if (ft_strncmp(*envp, "PATH=", 5) == 0)
+		if (ft_strcmp(list->key, "PATH") == 0)
 		{
-			paths = paths_fill(ft_split(*envp + 5, ':'));
+			paths = paths_fill(ft_split(list->value, ':'));
 			return (paths);
 		}
-		envp++;
+		list = list->next;
 	}
 	return (0);
 }
@@ -98,54 +100,11 @@ char	*make_cmd(char **paths, char **cmd_flags)
 			free(cmd);
 			i++;
 			if (i == paths_len)
-				printf("command not found: %s\n", cmd_flags[0]);
-			// должен выводить для всех невалидных команд, выводит только для одной
+			printf("command not found: %s\n", cmd_flags[0]);
 		}
 	}
 	return (cmd);
 }
-
-int	open_file(t_llist *fd)
-{
-	int	return_fd;
-
-	return_fd = -1;
-
-// 	add case if no redirect
-	if (ft_strncmp(fd->key,"<", 1) == 0)
-		return_fd = open(fd->value, O_RDONLY);
-	else if (ft_strncmp(fd->key,"<<", 2) == 0)
-		;
-	else if (ft_strncmp(fd->key,">", 1) == 0)
-		return_fd = open(fd->value, O_WRONLY | O_TRUNC | O_CREAT, 0644);
-	else if (ft_strncmp(fd->key,">>", 2) == 0)
-		;
-	else 
-	{
-		;
-	}
-	if (return_fd < 0)
-	// need signal here, no exit
-		strerror(errno);
-	fd = fd->next;
-	return (return_fd);
-}
-
-
-//		< infile ls | grep "smt" | wc -l > outfile
-// 			имеем bp - тип t_list, content - структуры t_block_process
-// 
-// typedef struct s_block_process
-// {
-// 	char		**argv;
-						// "ls"
-// 
-// 	t_file_info	*files;	// {0, infile}
-// 						// {1, outfile}
-						//
-// 	int			files_count;	// мб кол-во редиректов
-// 	int			argc;	// хз че это
-// }	t_block_process;
 
 void	init_child(t_child *child, t_list *bp)
 {
@@ -163,64 +122,32 @@ void	init_child(t_child *child, t_list *bp)
 int	check_if_builtin(t_block_process *block)
 {	
 	if (!ft_strcmp(block->argv[0], "echo"))
-	{
-		// ft_echo(block->argv);
 		return (1);
-	}
 	if (!ft_strcmp(block->argv[0], "pwd"))
-	{
-		// printf("return1: %i\n", global.last_return);
-		// ft_pwd(block->argv, global.envp_list);
-		// printf("return: %i\n", global.last_return);
 		return (1);
-	}
 	if (!ft_strcmp(block->argv[0], "unset"))
-	{
-		// ft_unset(block, global.envp_list);
 		return (1);
-	}
 	if (!ft_strcmp(block->argv[0], "env"))
-	{
-		// ft_env(block->argv, global.envp_list);
 		return (1);
-	}
-	return (0);
-}
-
-int	check_builtin2(t_block_process *block)
-{
-	if (!ft_strcmp(block->argv[0], "echo"))
-	{
+	if (!ft_strcmp(block->argv[0], "export"))
 		return (1);
-	}
-	if (!ft_strcmp(block->argv[0], "pwd"))
-	{
-		return (1);
-	}
-	if (!ft_strcmp(block->argv[0], "unset"))
-	{
-		return (1);
-	}
-	if (!ft_strcmp(block->argv[0], "env"))
-	{
-		return (1);
-	}
 	return (0);
 }
 
 int	execute_cmd(t_block_process *block)
 {
-
 	char	**paths;
 	char	*cmd;
 
-	// printf("trying to execute %s\n", block->argv[0]);
 	paths = NULL;
 	cmd = NULL;
-	paths = get_paths(global.local_envp);
+	paths = get_paths();
 	if (!paths)
-		strerror(errno);
-	if (!check_builtin2(block))
+	{
+		ft_putstr_fd(block->argv[0], 2);
+		ft_putendl_fd(": command not found", 2);
+	}
+	if (!check_if_builtin(block))
 	{
 		cmd = make_cmd(paths, block->argv);
 		if (execve(cmd, block->argv, global.local_envp) < 0)
@@ -238,7 +165,6 @@ int	execute_cmd(t_block_process *block)
 void	r_in(t_block_process *block, t_child *child)
 {
 	t_file_info	*tmp;
-
 
 	tmp = block->files;
 	// printf("redirect type = %d\n", tmp->redirect_type);
@@ -278,7 +204,6 @@ void	r_out(t_block_process *block, t_child *child)
 
 
 	tmp = block->files;
-
 	if (tmp->redirect_type == REDIR_TO) // ">"
 	{
 		child->fd_out = open(tmp->file_name, O_WRONLY | O_TRUNC | O_CREAT, 0644);
@@ -391,13 +316,35 @@ int	check_cmd_name(t_list *bp)
 void	builtin_execute(t_block_process *block)
 {
 	if (!ft_strcmp(block->argv[0], "env"))
-		ft_env(block->argv, global.envp_list);
+		ft_env(block->argv);
 	if (!ft_strcmp(block->argv[0], "unset"))
 		ft_unset(block, global.envp_list);
 	if (!ft_strcmp(block->argv[0], "echo"))
 		ft_echo(block->argv);
 	if (!ft_strcmp(block->argv[0], "pwd"))
 		ft_pwd(block->argv, global.envp_list);
+	if (!ft_strcmp(block->argv[0], "export"))
+		ft_export(block);
+}
+
+void	r_out_builtin(t_block_process *block)
+{
+	t_file_info	*tmp;
+
+	global.builtin_fd = 1;
+	tmp = block->files;
+	if (tmp->redirect_type == REDIR_TO)
+	{
+		global.builtin_fd = open(tmp->file_name, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+		cut_argv(block);
+	}
+	else if (tmp->redirect_type == HEREDOC_TO)
+	{
+		global.builtin_fd = open(tmp->file_name, O_WRONLY | O_APPEND | O_CREAT, 0644);
+		cut_argv(block);
+	}
+	if (global.builtin_fd < 0)
+		strerror(errno);
 }
 
 int	builtin_labour(t_child *child, t_block_process *block, int len)
@@ -410,13 +357,17 @@ int	builtin_labour(t_child *child, t_block_process *block, int len)
 	}
 	if (child->i < len - 1)
 	{
-		if (dup2(child->fd[child->current][1], STDOUT_FILENO) < 0)
-			strerror(errno);
+		if (child->i != child->len - 1)
+		{
+			if (dup2(child->fd[child->current][1], STDOUT_FILENO) < 0)
+				strerror(errno);
+		}
 		close(child->fd[child->current][0]);
 		close(child->fd[child->current][1]);
 	}
-	r_in(block, child);
-	r_out(block, child);
+	// r_in_builtin(block);
+	// r_out_builtin(block);
+	r_out_builtin(block);
 	builtin_execute(block);
 	return (0);
 }
@@ -442,10 +393,10 @@ void	new_executor(t_list *bp)
 			child.pid = fork();
 			if (child.pid == 0)
 				child_labour(&child, block, child.len);
-		}
 			close(child.fd[1 - child.current][0]);
 			close(child.fd[child.current][1]);
 			child.current = 1 - child.current;
+		}
 		bp = bp->next;
 	}
 	close(child.fd[1 - child.current][0]);

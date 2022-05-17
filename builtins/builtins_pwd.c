@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_pwd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/14 17:41:08 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/14 18:06:37 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/17 17:45:00 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ void	ft_pwd(char **args, t_llist __unused *envp)
 
 	if (args[1])
 	{
-		printf("pwd: too many arguments\n");
+		ft_putstr_fd("pwd: too many arguments\n", global.builtin_fd);
+		// printf("pwd: too many arguments\n");
 		global.last_return = 1;
 		return ;
 	}
@@ -42,5 +43,6 @@ void	ft_pwd(char **args, t_llist __unused *envp)
 		return ;
 	}
 	global.last_return = 0;
-	printf("%s\n", buf);
+	// printf("%s\n", buf);
+	ft_putendl_fd(buf, global.builtin_fd);
 }
