@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 16:12:49 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/17 18:21:26 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/18 18:50:36 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,24 @@
 void	handler(int code)
 {
 	if (code == SIGINT)
-		write(1, "\n", 5);
+		write(1, "\n💀 > ", 8);
 	if (code == SIGQUIT)
-		write(1, "Quit: 3\n", 8);
+	{
+		printf("\033[A\n💀 > exit\n");
+		exit(0);
+	}
+}
+
+void	wait_child(int len)
+{
+	int	i;
+
+	i = 0;
+	while (i < len)
+	{
+		waitpid(-1, 0, 0);
+		i++;
+	}
 }
 
 void	sig_sig_signal(void)
@@ -27,17 +42,17 @@ void	sig_sig_signal(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-void	error(int code, char *text)
-{
-	if (code == -1)
-	{
-		write(2, text, ft_strlen(text));
-		write(2, " command not found\n", 20);
-		exit (1);
-	}
-	perror(text);
-	exit (1);
-}
+// void	error(int code, char *text)
+// {
+// 	if (code == -1)
+// 	{
+// 		write(2, text, ft_strlen(text));
+// 		write(2, " command not found\n", 20);
+// 		exit (1);
+// 	}
+// 	strerror(errno);
+// 	exit (1);
+// }
 
 char	**paths_fill(char **paths)
 {
@@ -45,17 +60,17 @@ char	**paths_fill(char **paths)
 	char	*tmp;
 
 	if (!paths)
-		error(errno, "malloc: ");
+		strerror(errno);
 	i = 0;
 	while (paths[i])
 	{
 		tmp = ft_strjoin(paths[i], "/");
 		if (!tmp)
-			error(errno, "malloc: ");
+			strerror(errno);
 		free(paths[i]);
 		paths[i] = ft_strdup(tmp);
 		if (!paths[i] || !tmp)
-			error(errno, "malloc: ");
+			strerror(errno);
 		free(tmp);
 		i++;
 	}
@@ -90,6 +105,13 @@ int	ft_paths_len(char **paths)
 	return (i);
 }
 
+
+
+
+// если ls + несуществующий файл, не меняется last return
+
+
+
 char	*make_cmd(char **paths, char **cmd_flags)
 {
 	char	*cmd;
@@ -100,7 +122,7 @@ char	*make_cmd(char **paths, char **cmd_flags)
 	i = 0;
 	cmd = ft_strdup(cmd_flags[0]);
 	if (!cmd)
-		error(errno, "malloc: ");
+		strerror(errno);
 	if (!access(cmd, F_OK))
 		return (cmd);
 	else
@@ -114,7 +136,10 @@ char	*make_cmd(char **paths, char **cmd_flags)
 			free(cmd);
 			i++;
 			if (i == paths_len)
-			printf("command not found: %s\n", cmd_flags[0]);
+			{
+				printf("command not found: %s\n", cmd_flags[0]);
+				// wait_child(2);
+			}
 		}
 	}
 	return (cmd);
@@ -145,10 +170,12 @@ int	check_if_builtin(t_block_process *block)
 		return (1);
 	if (!ft_strcmp(block->argv[0], "export"))
 		return (1);
+	if (!ft_strcmp(block->argv[0], "exit"))
+		return (1);
 	return (0);
 }
 
-int	execute_cmd(t_block_process *block)
+int	execute_cmd(t_block_process *block, pid_t pid)
 {
 	char	**paths;
 	char	*cmd;
@@ -160,10 +187,13 @@ int	execute_cmd(t_block_process *block)
 	{
 		ft_putstr_fd(block->argv[0], 2);
 		ft_putendl_fd(": command not found", 2);
+		return (1);
 	}
 	if (!check_if_builtin(block))
 	{
 		cmd = make_cmd(paths, block->argv);
+		if (!cmd)
+			waitpid(pid, NULL, 0);
 		if (execve(cmd, block->argv, global.local_envp) < 0)
 			strerror(errno);
 		return (0);
@@ -176,21 +206,40 @@ int	execute_cmd(t_block_process *block)
 	return (1);
 }
 
+
+
+int	files_len(t_file_info *info)
+{
+	int	i;
+
+	i = 0;
+	while (info[i].file_name)
+	{
+		i++;
+	}
+	return (i);
+}
+
 void	r_in(t_block_process *block, t_child *child)
 {
 	t_file_info	*tmp;
-
+	int			i;
+	
+	i = 0;
 	tmp = block->files;
 	// printf("redirect type = %d\n", tmp->redirect_type);
 	// printf("filename = %s\n", tmp->file_name);
 	// printf("cmd name = %s\n", block->argv[0]);
-
-	if (tmp->redirect_type == REDIR_FROM) // "<"
-		child->fd_in = open(tmp->file_name, O_RDONLY);
-	else if (tmp->redirect_type == HEREDOC_FROM) // "<<"
-		child->fd_in = open(tmp->file_name, O_RDONLY);
-	if (child->fd_in < 0)
-		strerror(errno);
+	while (i < block->files_count)
+	{
+		if (tmp[i].redirect_type == REDIR_FROM) // "<"
+			child->fd_in = open(tmp[i].file_name, O_RDONLY);
+		else if (tmp[i].redirect_type == HEREDOC_FROM) // "<<"
+			child->fd_in = open(tmp[i].file_name, O_RDONLY);
+		if (child->fd_in < 0)
+			strerror(errno);
+		i++;
+	}
 	if (child->fd_in)
 	{
 		if (dup2(child->fd_in, STDIN_FILENO) < 0)
@@ -215,18 +264,23 @@ void	cut_argv(t_block_process *block)
 void	r_out(t_block_process *block, t_child *child)
 {
 	t_file_info	*tmp;
+	int	i;
 
-
+	i = 0;
 	tmp = block->files;
-	if (tmp->redirect_type == REDIR_TO) // ">"
+	while (i <= block->files_count + 1)
 	{
-		child->fd_out = open(tmp->file_name, O_WRONLY | O_TRUNC | O_CREAT, 0644);
-		cut_argv(block);
-	}
-	else if (tmp->redirect_type == HEREDOC_TO) // ">>"
-	{
-		child->fd_out = open(tmp->file_name, O_WRONLY | O_APPEND | O_CREAT, 0644);
-		cut_argv(block);
+		if (tmp[i].redirect_type == REDIR_TO) // ">"
+		{
+			child->fd_out = open(tmp[i].file_name, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+			cut_argv(block);
+		}
+		else if (tmp[i].redirect_type == HEREDOC_TO) // ">>"
+		{
+			child->fd_out = open(tmp[i].file_name, O_WRONLY | O_APPEND | O_CREAT, 0644);
+			cut_argv(block);
+		}
+		i++;
 	}
 	if (child->fd_out < 0)
 		strerror(errno);
@@ -256,23 +310,13 @@ int	child_labour(t_child *child, t_block_process *block, int len)
 	r_out(block, child);
 	if (block->argv[0])
 	{
-		if (execute_cmd(block) == 1)
+		if (execute_cmd(block, child->pid) == 1)
 			return (1);
 	}
 	return (0);	
 }
 
-void	wait_child(int len)
-{
-	int	i;
 
-	i = 0;
-	while (i < len)
-	{
-		waitpid(-1, 0, 0);
-		i++;
-	}
-}
 
 int	check_cmd_name(t_list *bp)
 {
@@ -286,47 +330,6 @@ int	check_cmd_name(t_list *bp)
 	return (0);
 }
 
-// void	executor(t_list *bp)
-// {
-// 	t_child			child;
-// 	t_block_process	*block;
-// 	int	status;
-
-// 	status = 0;
-// 	init_child(&child, bp);
-
-// 	while (++child.i < child.len)
-// 	{
-// 		block = (t_block_process *)bp->content;
-
-// 		if (check_cmd_name(bp))
-// 			block->argv++;	
-// 		if (pipe(child.fd[child.current]) == -1)
-// 			strerror(errno);
-// 		if (check_if_builtin(block) == 0)
-// 		{
-// 			child.pid = fork();
-
-// 			if (child.pid)
-// 				// sig_sig_signal(); 
-// 				;
-// 			else if (child.pid < 0)
-// 				strerror(errno);
-// 			else if (child.pid == 0)
-// 				child_labour(&child, block, child.len);
-// 			close(child.fd[1 - child.current][0]);
-// 			close(child.fd[child.current][1]);
-// 			// if (child.pid == 0)
-// 			// 	exit(0);
-// 			child.current = 1 - child.current;
-// 		}
-// 		// global.last_return = status;
-// 		bp = bp->next;
-// 	}
-// 	close(child.fd[1 - child.current][0]);
-// 	wait_child(child.len);
-// }
-
 void	builtin_execute(t_block_process *block)
 {
 	if (!ft_strcmp(block->argv[0], "env"))
@@ -339,26 +342,37 @@ void	builtin_execute(t_block_process *block)
 		ft_pwd(block->argv, global.envp_list);
 	if (!ft_strcmp(block->argv[0], "export"))
 		ft_export(block);
+	if (!ft_strcmp(block->argv[0], "exit"))
+		ft_exit(block->argv, global.envp_list);
 }
 
 void	r_out_builtin(t_block_process *block)
 {
 	t_file_info	*tmp;
+	int			i;
 
 	global.builtin_fd = 1;
+	i = 0;
 	tmp = block->files;
-	if (tmp->redirect_type == REDIR_TO)
+	while (i < block->files_count)
 	{
-		global.builtin_fd = open(tmp->file_name, O_WRONLY | O_TRUNC | O_CREAT, 0644);
-		cut_argv(block);
-	}
-	else if (tmp->redirect_type == HEREDOC_TO)
-	{
-		global.builtin_fd = open(tmp->file_name, O_WRONLY | O_APPEND | O_CREAT, 0644);
-		cut_argv(block);
+		if (tmp->redirect_type == REDIR_TO)
+		{
+			global.builtin_fd = open(tmp[i].file_name, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+			cut_argv(block);
+		}
+		else if (tmp->redirect_type == HEREDOC_TO)
+		{
+			global.builtin_fd = open(tmp[i].file_name, O_WRONLY | O_APPEND | O_CREAT, 0644);
+			cut_argv(block);
+		}
+		i++;
 	}
 	if (global.builtin_fd < 0)
+	{
+		global.last_return = 1;
 		strerror(errno);
+	}
 }
 
 int	builtin_labour(t_child *child, t_block_process *block, int len)
@@ -407,8 +421,9 @@ void	new_executor(t_list *bp)
 		{
 			child.pid = fork();
 			if (child.pid == 0)
-				child_labour(&child, block, child.len);
-			else if (child.pid)
+				if (child_labour(&child, block, child.len) == 1)
+					waitpid(child.pid, NULL, 0);
+			if (child.pid)
 				sig_sig_signal();
 			close(child.fd[1 - child.current][0]);
 			close(child.fd[child.current][1]);

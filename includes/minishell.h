@@ -84,6 +84,7 @@ typedef struct s_global
 // void	executor(t_list *bp);
 void	new_executor(t_list *bp);
 void	handler(int code);
+void	sig_sig_signal(void);
 
 
 

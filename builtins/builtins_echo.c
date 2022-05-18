@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/14 15:41:25 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/17 17:43:27 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/18 18:05:04 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,17 +51,17 @@ void	ft_echo(char **args)
 	}
 	if (ft_echo_help(args, &i))
 		return ;
-	if (flag == 1 && i > 2)
-	{
-		// if (printf("%%") < 0)
-			// return ;
-		ft_putstr_fd("%%", global.builtin_fd);
-	}
-	else if (flag != 1)
+	// if (flag == 1 && i > 2)
+	// {
+	// 	// if (printf("%%") < 0)
+	// 		// return ;
+	// 	// ft_putstr_fd("%%", global.builtin_fd);
+	// }
+	if (flag != 1)
 	{
 		// if (printf("\n") < 0)
 			// return ;
 		ft_putstr_fd("\n", global.builtin_fd);
 	}
-	// global.last_return = 0;
+	global.last_return = 0;
 }

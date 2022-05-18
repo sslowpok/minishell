@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/17 18:19:39 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/18 18:43:41 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,13 @@ char	*ft_readline(void)
 	char	*line_read;
 
 	line_read = readline("💀 > ");
-	if (!line_read)
-		exit(EXIT_FAILURE);
+	if (line_read == NULL)
+	{
+		printf("\033[A\n💀 > exit\n");
+		exit(0);
+	}
+	// if (!line_read)
+	// 	exit(EXIT_FAILURE);
 	if (line_read && *line_read)
 		add_history (line_read);
 	return (line_read);
