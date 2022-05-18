@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/18 18:43:41 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/18 19:13:49 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ char	*ft_readline(void)
 	char	*line_read;
 
 	line_read = readline("💀 > ");
-	if (line_read == NULL)
+	if (!line_read)
 	{
 		printf("\033[A\n💀 > exit\n");
 		exit(0);
@@ -93,11 +93,16 @@ int	main(int argc, char __unused **argv, char __unused **envp)
 		printf("%s=%s\n", info.envp_list->key, info.envp_list->value);
 		info.envp_list = info.envp_list->next;
 	}*/
-	signal(SIGINT, handler);
-	signal(SIGQUIT, handler);
+
+
+
+	
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
 		line = ft_readline();
+		
 		if (ft_lexer(line, &lexems))
 			return (1);
 		// t_list *lex = lexems;
@@ -127,7 +132,15 @@ int	main(int argc, char __unused **argv, char __unused **envp)
 		// 		ft_pwd(block->argv, info.envp_list);
 		// 	tmp = tmp->next;
 		// }
-		new_executor (bp);
+		signal(SIGINT, handler);
+		signal(SIGQUIT, handler);
+		if (line)
+			new_executor (bp);
+		else
+		{
+			signal(SIGINT, handler);
+			signal(SIGINT, SIG_IGN);
+		}
 		ft_free_block_process(&bp);
 		free(line);
 	}

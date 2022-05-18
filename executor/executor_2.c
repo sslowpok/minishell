@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 16:12:49 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/18 18:50:36 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/18 19:12:35 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -393,8 +393,6 @@ int	builtin_labour(t_child *child, t_block_process *block, int len)
 		close(child->fd[child->current][0]);
 		close(child->fd[child->current][1]);
 	}
-	// r_in_builtin(block);
-	// r_out_builtin(block);
 	r_out_builtin(block);
 	builtin_execute(block);
 	return (0);
