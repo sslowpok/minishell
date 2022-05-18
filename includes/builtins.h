@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/14 17:25:17 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/18 15:26:08 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/18 16:04:16 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 
 # include "minishell.h"
 # include "envp_parser.h"
+
+# define LLI_PLUS   (unsigned long long)9223372036854775807
+# define LLI_MINUS  9223372036854775808
 
 void	ft_echo(char **args);
 void	ft_env(char **args, t_llist *envp);
