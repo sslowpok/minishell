@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/18 19:13:49 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/18 19:29:55 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,8 +97,8 @@ int	main(int argc, char __unused **argv, char __unused **envp)
 
 
 	
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, handler);
+	signal(SIGQUIT, handler);
 	while (1)
 	{
 		line = ft_readline();
@@ -132,14 +132,14 @@ int	main(int argc, char __unused **argv, char __unused **envp)
 		// 		ft_pwd(block->argv, info.envp_list);
 		// 	tmp = tmp->next;
 		// }
-		signal(SIGINT, handler);
-		signal(SIGQUIT, handler);
+		// signal(SIGINT, handler);
+		// signal(SIGQUIT, handler);
 		if (line)
 			new_executor (bp);
 		else
 		{
 			signal(SIGINT, handler);
-			signal(SIGINT, SIG_IGN);
+			signal(SIGINT, handler);
 		}
 		ft_free_block_process(&bp);
 		free(line);
