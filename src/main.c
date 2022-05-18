@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/15 17:01:20 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/18 15:25:45 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,10 +118,13 @@ int	main(int argc, char __unused **argv, char __unused **envp)
 				ft_pwd(block->argv, info.envp_list);
 			if (!ft_strcmp(block->argv[0], "cd"))
 				ft_cd(block->argv, info.envp_list);
+			if (!ft_strcmp(block->argv[0], "exit"))
+				ft_exit(block->argv, info.envp_list);
 			tmp = tmp->next;
 		}
 		ft_free_block_process(&bp);
 		free(line);
+
 	}
 	return (0);
 }
