@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/19 17:05:48 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/19 17:07:05 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/19 17:19:07 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ char	**paths_fill(char **paths)
 	return (paths);
 }
 
-char	**get_paths()
+char	**get_paths(void)
 {
 	char	**paths;
 	t_llist	*list;
@@ -67,9 +67,7 @@ char	*make_cmd(char **paths, char **cmd_flags)
 {
 	char	*cmd;
 	int		i;
-	int		paths_len;
-	
-	paths_len = ft_paths_len(paths);
+
 	i = 0;
 	cmd = ft_strdup(cmd_flags[0]);
 	if (!cmd)
@@ -85,8 +83,7 @@ char	*make_cmd(char **paths, char **cmd_flags)
 			if (!access(cmd, F_OK))
 				break ;
 			free(cmd);
-			i++;
-			if (i == paths_len)
+			if (i++ == ft_paths_len(paths))
 			{
 				printf("💀 > command not found: %s\n", cmd_flags[0]);
 				exit (1);
