@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 16:12:49 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/19 12:44:50 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/19 14:14:58 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,16 @@
 void	handler(int code)
 {
 	if (code == SIGINT)
-		write(1, "\n💀 > ", 8);
-	if (code == SIGQUIT)
 	{
-		printf("\033[A\n💀 > exit\n");
-		exit(0);
+		write(1, "\n💀 > ", 8);
+		signal(SIGINT, handler);
 	}
+		// write(1, "\n💀 > ", 8);
+	// if (code == SIGQUIT)
+	// {
+	// 	printf("\033[A\n💀 > exit\n");
+	// 	exit(0);
+	// }
 }
 
 void	wait_child(int len)
@@ -39,7 +43,7 @@ void	wait_child(int len)
 void	sig_sig_signal(void)
 {
 	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
+	// signal(SIGQUIT, SIG_IGN);
 }
 
 // void	error(int code, char *text)
@@ -198,7 +202,7 @@ int	execute_cmd(t_block_process *block, __unused pid_t pid)
 	if (!paths)
 	{
 		ft_putendl_fd(": command not found", 2);
-		return (1);
+		exit (1);
 	}
 	if (!check_if_builtin(block))
 	{
@@ -302,6 +306,7 @@ void	r_out(t_block_process *block, t_child *child)
 
 int	child_labour(t_child *child, t_block_process *block, int len)
 {
+	sig_sig_signal();
 	if (child->i > 0)
 	{
 		if (dup2(child->fd[1 - child->current][0], STDIN_FILENO) < 0)
@@ -417,7 +422,6 @@ void	new_executor(t_list *bp)
 
 	while (++child.i < child.len)
 	{
-		
 		block = (t_block_process *)bp->content;
 		if (check_cmd_name(bp))
 			block->argv++;
@@ -433,7 +437,6 @@ void	new_executor(t_list *bp)
 			if (child.pid == 0)
 				if (child_labour(&child, block, child.len) == 1)
 					exit (1);
-					// waitpid(child.pid, NULL, 0);
 			close(child.fd[1 - child.current][0]);
 			close(child.fd[child.current][1]);
 			child.current = 1 - child.current;

@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/19 13:19:16 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/19 14:15:47 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,11 +53,11 @@ char	*ft_readline(void)
 	{
 		printf("\033[A\n💀 > exit\n");
 		exit(0);
-		// signal(SIGINT, handler);
-		// signal(SIGQUIT, handler);
+	// 	// signal(SIGINT, handler);
+	// 	// signal(SIGQUIT, handler);
 	}
-	// if (!line_read)
-	// 	exit(EXIT_FAILURE);
+	if (!line_read)
+		exit(EXIT_FAILURE);
 	if (line_read && *line_read)
 		add_history (line_read);
 	return (line_read);
@@ -137,7 +137,7 @@ int	main(int argc, char __unused **argv, char **envp)
 		// signal(SIGINT, handler);
 		// signal(SIGQUIT, handler);
 		signal(SIGINT, handler);
-		signal(SIGQUIT, handler);
+		signal(SIGQUIT, SIG_IGN);
 		new_executor (bp);
 		ft_free_block_process(&bp);
 		free(line);
