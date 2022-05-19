@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/18 19:49:49 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/19 13:19:16 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ char	*ft_readline(void)
 	{
 		printf("\033[A\n💀 > exit\n");
 		exit(0);
+		// signal(SIGINT, handler);
+		// signal(SIGQUIT, handler);
 	}
 	// if (!line_read)
 	// 	exit(EXIT_FAILURE);
@@ -63,7 +65,7 @@ char	*ft_readline(void)
 
 /* bp - list with block_processes. 
 Each element of bp has structure t_block_process as content*/
-int	main(int argc, char __unused **argv, char __unused **envp)
+int	main(int argc, char __unused **argv, char **envp)
 {
 	t_info		info;
 	char		*line;
@@ -96,9 +98,9 @@ int	main(int argc, char __unused **argv, char __unused **envp)
 
 
 
-	
-	signal(SIGINT, SIG_IGN);
+	signal(SIGINT, handler);
 	signal(SIGQUIT, SIG_IGN);
+	
 	while (1)
 	{
 		line = ft_readline();
@@ -134,13 +136,9 @@ int	main(int argc, char __unused **argv, char __unused **envp)
 		// }
 		// signal(SIGINT, handler);
 		// signal(SIGQUIT, handler);
-		if (line)
-			new_executor (bp);
-		else
-		{
-			signal(SIGINT, SIG_IGN);
-			signal(SIGQUIT, SIG_IGN);
-		}
+		signal(SIGINT, handler);
+		signal(SIGQUIT, handler);
+		new_executor (bp);
 		ft_free_block_process(&bp);
 		free(line);
 	}

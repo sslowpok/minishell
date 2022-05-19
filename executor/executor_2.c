@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 16:12:49 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/18 19:48:32 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/19 12:44:50 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ void	wait_child(int len)
 
 void	sig_sig_signal(void)
 {
-	signal(SIGINT, handler);
-	signal(SIGQUIT, handler);
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 }
 
 // void	error(int code, char *text)
@@ -137,7 +137,7 @@ char	*make_cmd(char **paths, char **cmd_flags)
 			i++;
 			if (i == paths_len)
 			{
-				printf("command not found: %s\n", cmd_flags[0]);
+				printf("💀 > command not found: %s\n", cmd_flags[0]);
 				exit (1);
 			}
 		}
@@ -175,24 +175,34 @@ int	check_if_builtin(t_block_process *block)
 	return (0);
 }
 
+void	total_free(char **str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		free(str[i]);
+		i++;
+	}
+	free(str);
+}
+
 int	execute_cmd(t_block_process *block, __unused pid_t pid)
 {
 	char	**paths;
 	char	*cmd;
 
-	paths = NULL;
 	cmd = NULL;
 	paths = get_paths();
 	if (!paths)
 	{
-		ft_putstr_fd(block->argv[0], 2);
 		ft_putendl_fd(": command not found", 2);
 		return (1);
 	}
 	if (!check_if_builtin(block))
 	{
 		cmd = make_cmd(paths, block->argv);
-			ft_putstr_fd(cmd, 2);
 		
 		if (!cmd)
 		{
@@ -200,13 +210,9 @@ int	execute_cmd(t_block_process *block, __unused pid_t pid)
 		}
 		if (execve(cmd, block->argv, global.local_envp) < 0)
 			strerror(errno);
-		return (0);
+		exit (0);		
 	}
-	// }
-	// printf("cmd = %s\n", block->argv[0]);
-
-	// total_free(paths);
-	// total_free(cmd_flags);
+	total_free(paths);
 	return (0);
 }
 
@@ -422,12 +428,12 @@ void	new_executor(t_list *bp)
 		else
 		{
 			child.pid = fork();
+			// if (child.pid)
+			// 	sig_sig_signal();
 			if (child.pid == 0)
 				if (child_labour(&child, block, child.len) == 1)
 					exit (1);
 					// waitpid(child.pid, NULL, 0);
-			if (child.pid)
-				sig_sig_signal();
 			close(child.fd[1 - child.current][0]);
 			close(child.fd[child.current][1]);
 			child.current = 1 - child.current;
