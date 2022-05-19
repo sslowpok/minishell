@@ -21,7 +21,12 @@ SRC	=	parser/envp_list_utils.c \
 		builtins/ft_unset.c \
 		builtins/ft_export.c \
 		builtins/builtins_exit.c \
-		builtins/builtins_exit_help.c
+		builtins/builtins_exit_help.c \
+		executor/signals.c \
+		executor/commands.c \
+		executor/redirects.c \
+		executor/builtin_utils.c \
+		executor/utils.c
 
 HEADERS	=	includes/envp_parser.h \
 			includes/error.h \

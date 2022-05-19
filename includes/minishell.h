@@ -85,6 +85,25 @@ typedef struct s_global
 void	new_executor(t_list *bp);
 void	handler(int code);
 void	sig_sig_signal(void);
+char	**paths_fill(char **paths);
+char	**get_paths();
+int	ft_paths_len(char **paths);
+char	*make_cmd(char **paths, char **cmd_flags);
+
+void	r_in(t_block_process *block, t_child *child);
+void	r_out(t_block_process *block, t_child *child);
+void	r_out_builtin(t_block_process *block);
+
+int	builtin_labour(t_child *child, t_block_process *block, int len);
+void	builtin_execute(t_block_process *block);
+void	cut_argv(t_block_process *block);
+int	check_if_builtin(t_block_process *block);
+int	files_len(t_file_info *info);
+
+void	wait_child(int len);
+void	total_free(char **str);
+void	init_child(t_child *child, t_list *bp);
+
 
 
 
