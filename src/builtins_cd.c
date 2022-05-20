@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 16:01:07 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/20 12:41:32 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/20 15:08:41 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,43 +14,6 @@
 #include <string.h>
 #include <sys/errno.h>
 #include <sys/param.h>
-
-/*
-change path1 to path2
-*/
-void	ft_change_old_dir_envp(char *path, t_llist **envp)
-{
-	t_llist	*env;
-
-	env = *envp;
-	while (env)
-	{
-		if (!(ft_strcmp("OLDPWD", env->key)))
-		{
-			free(env->value);
-			env->value = ft_strdup(path);
-			return ;
-		}
-		env = env->next;
-	}
-}
-
-void	ft_change_new_dir_envp(char *path, t_llist **envp)
-{
-	t_llist	*env;
-
-	env = *envp;
-	while (env)
-	{
-		if (!(ft_strcmp("PWD", env->key)))
-		{
-			free(env->value);
-			env->value = ft_strdup(path);
-			return ;
-		}
-		env = env->next;
-	}
-}
 
 void	ft_no_arguments(t_llist *envp)
 {
@@ -62,7 +25,7 @@ void	ft_no_arguments(t_llist *envp)
 	{
 		if (errno)
 		{
-			printf("cd: %s: %s", strerror(errno), dir);
+			printf("cd: %s: %s\n", strerror(errno), dir);
 			return ;
 		}
 	}
@@ -78,7 +41,7 @@ void	ft_go_to_old_path(t_llist *envp)
 	{
 		if (errno)
 		{
-			printf("cd: %s: %s", strerror(errno), dir);
+			printf("cd: %s: %s\n", strerror(errno), dir);
 			return ;
 		}
 	}
@@ -95,9 +58,38 @@ void	ft_go_to_path(char *str)
 		global.last_return = 1;
 		if (errno)
 		{
-			printf("cd: %s: %s", strerror(errno), dir);
+			printf("cd: %s: %s\n", strerror(errno), dir);
 			return ;
 		}
+	}
+}
+
+void	ft_handle_tilda(t_llist **envp, char **args, char *old_path)
+{
+	char	*dir;
+
+	if (!ft_strchr(args[1], '/') && ft_strlen(args[1]) > 1)
+	{
+		chdir(args[1]);
+		global.last_return = 1;
+		if (errno)
+			printf("cd: %s: %s\n", strerror(errno), args[1]);
+		return ;
+	}
+	dir = ft_get_value_envp(envp, "HOME");
+	chdir(dir);
+	free(dir);
+	if (ft_strlen(args[1]) == 1)
+		return ;
+	dir = ft_strchr(args[1], '/');
+	dir++;
+	if (dir && chdir(dir) && ft_strlen(dir) > 1)
+	{
+		global.last_return = 1;
+		if (errno)
+			printf("cd: %s: %s/%s\n", strerror(errno), \
+			ft_get_value_envp(envp, "HOME"), dir);
+		chdir(old_path);
 	}
 }
 
@@ -114,6 +106,7 @@ void	ft_cd(char **args, t_llist *envp)
 	char	old_path[MAXPATHLEN];
 	char	new_path[MAXPATHLEN];
 
+	global.last_return = 0;
 	getcwd(old_path, MAXPATHLEN);
 	if (!args[1])
 		ft_no_arguments(envp);
@@ -121,6 +114,8 @@ void	ft_cd(char **args, t_llist *envp)
 	{
 		if (!ft_strcmp("-", args[1]))
 			ft_go_to_old_path(envp);
+		else if (!ft_strncmp("~", args[1], 1))
+			ft_handle_tilda(&envp, args, old_path);
 		else
 			ft_go_to_path(args[1]);
 	}

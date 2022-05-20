@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/14 17:25:17 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/18 16:45:08 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/20 14:56:18 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,4 +29,7 @@ int			ft_get_args_count(char **args);
 int			ft_check_digit(char *str);
 void		ft_handle_lli(char *str);
 long long	ft_get_num(char *str);
+void		ft_change_old_dir_envp(char *path, t_llist **envp);
+void		ft_change_new_dir_envp(char *path, t_llist **envp);
+
 #endif
