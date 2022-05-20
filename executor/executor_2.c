@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 16:12:49 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/19 17:23:21 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/20 11:16:54 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int	execute_cmd(t_block_process *block, __unused pid_t pid)
 	if (!paths)
 	{
 		ft_putendl_fd(": command not found", 2);
+		global.last_return = 1;
 		exit (1);
 	}
 	if (!check_if_builtin(block))

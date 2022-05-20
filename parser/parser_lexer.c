@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_lexer.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 18:21:08 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/13 17:23:30 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/20 10:52:28 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,9 +105,7 @@ t_list	*ft_line_to_lexemes(char *str)
 */
 int	ft_lexer(char *line, t_list **lex)
 {
-	t_list	*lexems;
 
-	lexems = NULL;
 	if (ft_check_quotes(line))
 		return (1);
 	*lex = ft_line_to_lexemes(line);

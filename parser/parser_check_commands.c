@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_check_commands.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 17:55:09 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/15 17:15:06 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/20 10:52:11 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,12 +95,10 @@ Errors:
 int	ft_check_redirect_error(t_list **cmd)
 {
 	t_list	*meow;
-	int		i;
 	int		first;
 	int		second;
 
 	meow = *cmd;
-	i = 0;
 	while (meow)
 	{
 		if (ft_is_redirect((char *)meow->content) != -1 && !meow->next)

@@ -1,5 +1,6 @@
 minishell
 infile
+.vscode
 
 # Prerequisites
 *.d

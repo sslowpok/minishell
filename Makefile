@@ -39,6 +39,8 @@ OBJ	=	$(SRC:.c=.o)
 		$(CC) $(CFLAGS) -c $< -o $(<:.c=.o)
 
 
+#LD_FLAGS = -I /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk/usr/include/editline/readline.h
+
 $(NAME):	$(OBJ)
 		make bonus -C ./libft/
 		$(CC) $(CFLAGS) $(LD_FLAGS) $(OBJ) ./libft/libft.a -o $(NAME) -lreadline
