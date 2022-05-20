@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 19:02:24 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/15 16:19:53 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/20 19:44:10 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,6 @@ int	ft_count_redirects(t_list **cmd)
 	return (count);
 }
 
-/*
->(0) >>(1) <(2) <<(3)
-*/
 int	ft_is_redirect(char	*str)
 {
 	if (!ft_strncmp(str, ">", 2))

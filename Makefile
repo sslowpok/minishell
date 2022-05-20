@@ -28,7 +28,8 @@ SRC	=	parser/envp_list_utils.c \
 		executor/builtin_utils.c \
 		executor/utils.c \
 		builtins/builtins_cd.c \
-		builtins/builtins_cd_help.c
+		builtins/builtins_cd_help.c \
+		parser/parser_deal_quotes2.c
 
 HEADERS	=	includes/envp_parser.h \
 			includes/error.h \

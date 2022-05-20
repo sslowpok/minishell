@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/19 17:07:51 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/20 18:24:33 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/20 19:36:59 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,15 @@ void	r_in(t_block_process *block, t_child *child)
 	}
 }
 
+void	r_out_help(t_child *child)
+{
+	if (child->fd_out < 0 || \
+		(child->fd_out && dup2(child->fd_out, STDOUT_FILENO) < 0))
+		strerror(errno);
+	if (child->fd_out)
+		close(child->fd_out);
+}
+
 void	r_out(t_block_process *block, t_child *child)
 {
 	t_file_info	*tmp;
@@ -63,11 +72,16 @@ void	r_out(t_block_process *block, t_child *child)
 		}
 		i++;
 	}
-	if (child->fd_out < 0 || \
-		(child->fd_out && dup2(child->fd_out, STDOUT_FILENO) < 0))
+	r_out_help(child);
+}
+
+void	check_global_fd(void)
+{
+	if (g_global.builtin_fd < 0)
+	{
+		g_global.last_return = 1;
 		strerror(errno);
-	if (child->fd_out)
-		close(child->fd_out);
+	}
 }
 
 void	r_out_builtin(t_block_process *block)
@@ -75,28 +89,24 @@ void	r_out_builtin(t_block_process *block)
 	t_file_info	*tmp;
 	int			i;
 
-	global.builtin_fd = 1;
+	g_global.builtin_fd = 1;
 	i = 0;
 	tmp = block->files;
 	while (i < block->files_count)
 	{
 		if (tmp->redirect_type == REDIR_TO)
 		{
-			global.builtin_fd = open(tmp[i].file_name, \
+			g_global.builtin_fd = open(tmp[i].file_name, \
 			O_WRONLY | O_TRUNC | O_CREAT, 0644);
 			cut_argv(block);
 		}
 		else if (tmp->redirect_type == HEREDOC_TO)
 		{
-			global.builtin_fd = open(tmp[i].file_name, \
+			g_global.builtin_fd = open(tmp[i].file_name, \
 			O_WRONLY | O_APPEND | O_CREAT, 0644);
 			cut_argv(block);
 		}
 		i++;
 	}
-	if (global.builtin_fd < 0)
-	{
-		global.last_return = 1;
-		strerror(errno);
-	}
+	check_global_fd();
 }

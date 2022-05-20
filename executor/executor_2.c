@@ -6,14 +6,12 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 16:12:49 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/20 19:15:24 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/20 19:36:50 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include "../includes/builtins.h"
-
-// если ls + несуществующий файл, не меняется last return
 
 int	execute_cmd(t_block_process *block)
 {
@@ -34,7 +32,7 @@ int	execute_cmd(t_block_process *block)
 		cmd = make_cmd(paths, block->argv);
 		if (!cmd)
 			return (1);
-		if (execve(cmd, block->argv, global.local_envp) < 0)
+		if (execve(cmd, block->argv, g_global.local_envp) < 0)
 			return (-1);
 		return (0);
 	}
@@ -88,9 +86,6 @@ int	wait_children2(int len)
 	i = -1;
 	while (++i < len)
 		wait(&status);
-
-	// signal(SIGINT, handler);
-	// signal(SIGQUIT, SIG_IGN);
 	if (WIFEXITED(status))
 	{
 		if (!status)
@@ -104,9 +99,7 @@ int	wait_children2(int len)
 			return (130);
 		else if (WTERMSIG(status) == 3)
 			return (131);
-		// return (WEXITSTATUS(status));
 	}
-
 	return (WEXITSTATUS(status));
 }
 
@@ -126,23 +119,12 @@ int	new_executor(t_list *bp)
 		if (check_if_builtin(block) == 1)
 		{
 			builtin_labour(&child, block, child.len);
-			return (global.last_return);
+			return (g_global.last_return);
 		}
 		else
-		{
-			child.pid = fork();
-			if (child.pid == 0)
-				if (child_labour(&child, block, child.len) == 1)
-					exit (1);
-
-			close(child.fd[1 - child.current][0]);
-			close(child.fd[child.current][1]);
-			child.current = 1 - child.current;
-		}
-	
+			help_executor(&child, block);
 		bp = bp->next;
 	}
-
 	close(child.fd[1 - child.current][0]);
 	return (wait_children2(child.len));
 }

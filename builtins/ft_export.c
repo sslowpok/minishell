@@ -6,50 +6,13 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 17:45:26 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/18 17:47:18 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/20 19:49:19 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include "../includes/builtins.h"
 
-// int	ft_llstsize(t_llist *list)
-// {
-// 	int		i;
-// 	t_llist	*tmp;
-
-// 	i = 0;
-// 	tmp = list;
-// 	while (tmp)
-// 	{
-// 		i++;
-// 		tmp = tmp->next;
-// 	}
-// 	return (i);
-// }
-
-// t_llist	*sort_env_list(t_llist *list)
-// {
-// 	int	i;
-// 	int	j;
-// 	int	size;
-
-// 	i = 0;
-// 	size = ft_llstsize(list);
-// 	while (i < size)
-// 	{
-// 		j = 0;
-// 		if ()
-
-
-
-// 		i++;
-// 	}
-// }
-
-// *********************************************
-// need to add case for no argv[1] (just export)
-// *********************************************
 void	ft_export(t_block_process *block)
 {
 	char	**tmp;
@@ -57,7 +20,7 @@ void	ft_export(t_block_process *block)
 
 	if (block->argv[1])
 	{
-		ptr = global.envp_list;
+		ptr = g_global.envp_list;
 		tmp = ft_split(block->argv[1], '=');
 		if (!tmp)
 			strerror(errno);
@@ -70,4 +33,6 @@ void	ft_export(t_block_process *block)
 		ptr->next->value = tmp[1];
 		ptr->next->next = NULL;
 	}
+	else
+		ft_env(block->argv);
 }

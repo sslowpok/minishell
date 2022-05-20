@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 18:42:57 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/15 12:42:20 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/20 19:43:02 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,33 +29,26 @@
 
 char	*ft_strjoin_mod(char const *s1, char ch);
 
-/*File parser_lexer.c*/
 int		ft_lexer(char *line, t_list **lex);
 
-/*File parser_lexemes_to_bp.c*/
 int		ft_lexeme_to_bp(t_list **bp, t_list **lexemes, t_llist *envp);
 
-/*File parser_redir_utils.c*/
 int		ft_count_redirects(t_list **cmd);
 int		ft_is_redirect(char	*str);
 
-/*File parser_utils1.c*/
 char	*ft_pop_front(t_list **head);
 void	ft_delete_list(t_list **head);
 int		ft_isspace(char s);
 int		ft_check_quotes(char *line);
 char	*ft_strjoin_mod(char const *s1, char ch);
 
-/*File parser_block_process_clear.c*/
 void	ft_free_struct_bp(t_block_process *bp);
 void	ft_free_block_process(t_list **head);
 
-/*FIle parser_check_commands.c*/
 int		ft_print_parse_error(char *msg);
 int		ft_check_pipe_error(t_list *lexemes);
 int		ft_check_redirect_error(t_list **cmd);
-
-/*File parser_deal_quotes.c*/
 int		ft_delete_quotes(t_list **cmd, t_llist *envp);
+char	*ft_deal_single_quote(char *str, int *j, char *to_copy);
 
 #endif

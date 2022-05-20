@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/19 17:09:54 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/20 18:36:00 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/20 19:36:37 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,13 @@ void	builtin_execute(t_block_process *block)
 	if (!ft_strcmp(block->argv[0], "echo"))
 		ft_echo(block->argv);
 	if (!ft_strcmp(block->argv[0], "pwd"))
-		ft_pwd(block->argv, global.envp_list);
+		ft_pwd(block->argv, g_global.envp_list);
 	if (!ft_strcmp(block->argv[0], "export"))
 		ft_export(block);
 	if (!ft_strcmp(block->argv[0], "exit"))
-		ft_exit(block->argv, global.envp_list);
+		ft_exit(block->argv, g_global.envp_list);
 	if (!ft_strcmp(block->argv[0], "cd"))
-		ft_cd(block->argv, global.envp_list);
+		ft_cd(block->argv, g_global.envp_list);
 }
 
 void	cut_argv(t_block_process *block)

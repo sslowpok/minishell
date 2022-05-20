@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 14:55:11 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/20 18:29:00 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/20 19:18:41 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,6 @@ void	ft_change_old_dir_envp(char *path, t_llist **envp)
 	}
 }
 
-/*
-change PWD value in envp
-*/
 void	ft_change_new_dir_envp(char *path, t_llist **envp)
 {
 	t_llist	*env;

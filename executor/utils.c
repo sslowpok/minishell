@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/19 17:12:47 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/20 18:19:43 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/20 19:27:08 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,15 @@ void	init_child(t_child *child, t_list *bp)
 	child->fd_in = 0;
 	child->fd_out = 0;
 	child->len = ft_lstsize(bp);
+}
+
+void	help_executor(t_child *child, t_block_process *block)
+{
+	child->pid = fork();
+	if (child->pid == 0)
+		if (child_labour(child, block, child->len) == 1)
+			exit (1);
+	close(child->fd[1 - child->current][0]);
+	close(child->fd[child->current][1]);
+	child->current = 1 - child->current;
 }

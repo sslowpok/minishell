@@ -1,31 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   errors.c                                           :+:      :+:    :+:   */
+/*   parser_deal_quotes2.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/15 16:47:11 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/20 17:33:11 by sslowpok         ###   ########.fr       */
+/*   Created: 2022/05/20 19:39:51 by sslowpok          #+#    #+#             */
+/*   Updated: 2022/05/20 19:41:41 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/error.h"
+#include "../includes/minishell.h"
+#include "../includes/parser.h"
+#include "../includes/builtins.h"
 
-void	error(int code, char *text)
+char	*ft_deal_single_quote(char *str, int *j, char *to_copy)
 {
-	if (code == -1)
+	int		i;
+
+	i = *j;
+	i++;
+	while (to_copy[i] != 39)
 	{
-		write(2, text, ft_strlen(text));
-		write(2, " command not found\n", 20);
-		exit (1);
+		str = ft_strjoin_mod(str, to_copy[i]);
+		i++;
 	}
-	perror(text);
-	exit (1);
-}
-
-void	inp_error(void)
-{
-	ft_putendl_fd("Invalid input.", 2);
-	exit(1);
+	i++;
+	*j = i;
+	return (str);
 }

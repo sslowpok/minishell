@@ -3,17 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils1.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 18:42:00 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/13 16:33:03 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/20 19:44:17 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/parser.h"
-/*
-Source: https://learnc.info/adt/linked_list.html
-*/
+
 char	*ft_pop_front(t_list **head)
 {
 	t_list	*prev;
@@ -29,9 +27,6 @@ char	*ft_pop_front(t_list **head)
 	return (val);
 }
 
-/*
-Source: https://learnc.info/adt/linked_list.html
-*/
 void	ft_delete_list(t_list **head)
 {
 	t_list	*prev;
@@ -55,10 +50,6 @@ s == '\v' || s == '\f' || s == '\r')
 	return (0);
 }
 
-/*
-34 - Double-Quotes
-39 - Single-Quotes
-*/
 int	ft_check_quotes(char *line)
 {
 	int	i;

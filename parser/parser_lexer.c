@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_lexer.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 18:21:08 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/20 10:52:28 by alex             ###   ########.fr       */
+/*   Updated: 2022/05/20 19:44:07 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,6 @@ char	*ft_char_is_spec(t_list **lexeme, int *j, char *s, char *str)
 	return (s);
 }
 
-// put str[i] to s till we meet space or char like pipe or redirect
-// pipes and redirects are separate lexemes
 t_list	*ft_line_to_lexemes(char *str)
 {
 	t_list	*lex;
@@ -99,13 +97,8 @@ t_list	*ft_line_to_lexemes(char *str)
 	return (lex);
 }
 
-/*
-1) Check that each outer open quote has corresponding closing quote.
-2) Get tokens (lexems).
-*/
 int	ft_lexer(char *line, t_list **lex)
 {
-
 	if (ft_check_quotes(line))
 		return (1);
 	*lex = ft_line_to_lexemes(line);

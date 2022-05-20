@@ -3,25 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   envp_list_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 16:54:49 by coverand          #+#    #+#             */
-/*   Updated: 2022/04/29 18:11:51 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/20 19:43:17 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/envp_parser.h"
 
-/*
-Function that deletes data with specified key element from envp_list
-Source: https://www.geeksforgeeks.org/linked-list-set-3-deleting-node/
-*/
-/*
-Iterative Method:
-Find the previous node of the node to be deleted.
-Change the next of the previous node.
-Free memory for the node to be deleted.
-*/
 void	ft_remove_elem_envp(t_llist **envp_list, char *key)
 {
 	t_llist	*curr;
@@ -46,9 +36,6 @@ void	ft_remove_elem_envp(t_llist **envp_list, char *key)
 	free(curr);
 }
 
-/*
-Function that returns value of specified environment variable
-*/
 char	*ft_get_value_envp(t_llist **envp_list, char *key)
 {
 	char	*ans;
