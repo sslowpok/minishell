@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 13:10:57 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/20 19:16:16 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/20 19:17:27 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,6 @@
 #include "../includes/envp_parser.h"
 #include "../includes/builtins.h"
 
-/*
-Source: https://web.mit.edu/gnu/doc/html/rlman_2.html
-*/
-/* 
-1) Get a line from the user. 
-2) If the line has any text in it, save it on the history.
-3) Return line.
-*/
 char	*ft_readline(void)
 {
 	char	*line_read;
