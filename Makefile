@@ -28,7 +28,8 @@ SRC_LIST	=	main.c \
 				builtins_env.c \
 				builtins_pwd.c \
 				builtins_cd.c \
-				builtins_exit.c 
+				builtins_exit.c \
+				builtins_exit_help.c 
 
 
 OBJ_LIST	=	$(SRC:%.c=%.o)

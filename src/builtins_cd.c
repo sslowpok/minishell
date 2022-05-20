@@ -6,7 +6,7 @@
 /*   By: coverand <coverand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 16:01:07 by coverand          #+#    #+#             */
-/*   Updated: 2022/05/15 20:00:35 by coverand         ###   ########.fr       */
+/*   Updated: 2022/05/20 12:41:32 by coverand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,8 @@ void	ft_change_new_dir_envp(char *path, t_llist **envp)
 void	ft_no_arguments(t_llist *envp)
 {
 	char	*dir;
-	
+
 	dir = ft_get_value_envp(&envp, "HOME");
-//	ft_change_dir_envp("OLDPWD", "PWD", &envp);
 	global.last_return = chdir(dir);
 	if (global.last_return)
 	{
@@ -67,7 +66,39 @@ void	ft_no_arguments(t_llist *envp)
 			return ;
 		}
 	}
-//		ft_change_dir_envp("PWD", "HOME", &envp);
+}
+
+void	ft_go_to_old_path(t_llist *envp)
+{
+	char	*dir;
+
+	dir = ft_get_value_envp(&envp, "OLDPWD");
+	global.last_return = chdir(dir);
+	if (global.last_return)
+	{
+		if (errno)
+		{
+			printf("cd: %s: %s", strerror(errno), dir);
+			return ;
+		}
+	}
+}
+
+void	ft_go_to_path(char *str)
+{
+	char	*dir;
+
+	dir = ft_strdup(str);
+	global.last_return = chdir(dir);
+	if (global.last_return)
+	{
+		global.last_return = 1;
+		if (errno)
+		{
+			printf("cd: %s: %s", strerror(errno), dir);
+			return ;
+		}
+	}
 }
 
 /*
@@ -75,19 +106,24 @@ If no arguments given:
 1) go to HOME
 2) Change PWD to HOME
 3) Change OLDPWD to previos PWD
+
+If there is at least 1 arg -> just make  chdir and handle possible errors.
 */
 void	ft_cd(char **args, t_llist *envp)
 {
-//	char	*dir;
 	char	old_path[MAXPATHLEN];
 	char	new_path[MAXPATHLEN];
-	//char	*tmp;
 
 	getcwd(old_path, MAXPATHLEN);
 	if (!args[1])
 		ft_no_arguments(envp);
 	else
-		printf("Can't handle it yet!\n");
+	{
+		if (!ft_strcmp("-", args[1]))
+			ft_go_to_old_path(envp);
+		else
+			ft_go_to_path(args[1]);
+	}
 	getcwd(new_path, MAXPATHLEN);
 	ft_change_old_dir_envp(old_path, &envp);
 	ft_change_new_dir_envp(new_path, &envp);
