@@ -26,7 +26,9 @@ SRC	=	parser/envp_list_utils.c \
 		executor/commands.c \
 		executor/redirects.c \
 		executor/builtin_utils.c \
-		executor/utils.c
+		executor/utils.c \
+		builtins/builtins_cd.c \
+		builtins/builtins_cd_help.c
 
 HEADERS	=	includes/envp_parser.h \
 			includes/error.h \

@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/19 17:09:54 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/19 17:11:45 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/20 18:36:00 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ int	check_if_builtin(t_block_process *block)
 		return (1);
 	if (!ft_strcmp(block->argv[0], "exit"))
 		return (1);
+	if (!ft_strcmp(block->argv[0], "cd"))
+		return (1);
 	return (0);
 }
 
@@ -58,7 +60,7 @@ void	builtin_execute(t_block_process *block)
 	if (!ft_strcmp(block->argv[0], "env"))
 		ft_env(block->argv);
 	if (!ft_strcmp(block->argv[0], "unset"))
-		ft_unset(block, global.envp_list);
+		ft_unset(block);
 	if (!ft_strcmp(block->argv[0], "echo"))
 		ft_echo(block->argv);
 	if (!ft_strcmp(block->argv[0], "pwd"))
@@ -67,6 +69,8 @@ void	builtin_execute(t_block_process *block)
 		ft_export(block);
 	if (!ft_strcmp(block->argv[0], "exit"))
 		ft_exit(block->argv, global.envp_list);
+	if (!ft_strcmp(block->argv[0], "cd"))
+		ft_cd(block->argv, global.envp_list);
 }
 
 void	cut_argv(t_block_process *block)

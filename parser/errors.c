@@ -6,12 +6,11 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 16:47:11 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/04/25 15:16:34 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/20 17:33:11 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/error.h"
-#include "../includes/pipex_bonus.h"
 
 void	error(int code, char *text)
 {

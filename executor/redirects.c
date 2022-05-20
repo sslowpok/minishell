@@ -6,7 +6,7 @@
 /*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/19 17:07:51 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/19 17:26:53 by sslowpok         ###   ########.fr       */
+/*   Updated: 2022/05/20 18:24:33 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,10 @@ void	r_in(t_block_process *block, t_child *child)
 		else if (tmp[i].redirect_type == HEREDOC_FROM)
 			child->fd_in = open(tmp[i].file_name, O_RDONLY);
 		if (child->fd_in < 0)
-			strerror(errno);
+		{
+			printf("%s : %s\n", tmp[i].file_name, strerror(errno));
+			exit (1);
+		}
 		i++;
 	}
 	if (child->fd_in)

@@ -13,8 +13,6 @@
 
 # include "../libft/libft.h"
 
-// typedef int(*t_builtin_ptr)(t_list*, t_info*);
-
 # define REDIR_FROM		2 // <
 # define REDIR_TO		4 // >
 # define HEREDOC_FROM	3 // <<
@@ -30,12 +28,7 @@ typedef struct s_llist
 
 typedef struct s_info
 {
-	char	*reserved_words[7];
-	char	**envp;
 	t_llist	*envp_list;
-	int		envp_f;
-	int		exit_f;
-	int		status;
 }		t_info;
 
 typedef struct s_file_info
@@ -82,7 +75,7 @@ typedef struct s_global
 }		t_global;
 
 // void	executor(t_list *bp);
-void	new_executor(t_list *bp);
+int	new_executor(t_list *bp);
 void	handler(int code);
 void	sig_sig_signal(void);
 char	**paths_fill(char **paths);

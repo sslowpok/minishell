@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/19 17:04:20 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/20 11:35:51 by alex             ###   ########.fr       */
+/*   Updated: 2022/05/20 17:27:45 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,7 @@ void	handler(int code)
 {
 	if (code == SIGINT)
 	{
-		ft_putstr_fd("\b\b\n💀 >", 2);
-		//rl_on_new_line();
-		//rl_replace_line("", 0);
-		//if (!g_sig.pid)
-		//	rl_redisplay();
+		ft_putstr_fd("\b\b\n💀 > ", 2);
 	}
 	else if (code == SIGQUIT)
 	{

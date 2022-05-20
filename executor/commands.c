@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: sslowpok <sslowpok@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/19 17:05:48 by sslowpok          #+#    #+#             */
-/*   Updated: 2022/05/20 11:33:58 by alex             ###   ########.fr       */
+/*   Updated: 2022/05/20 19:14:25 by sslowpok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,9 +86,8 @@ char	*make_cmd(char **paths, char **cmd_flags)
 			free(cmd);
 			if (i == ft_paths_len(paths) - 1)
 			{
-				printf("💀 > command not found: %s\n", cmd_flags[0]);
-				global.last_return = 1;
-				exit (1);
+				printf("💀 > %s: command not found\n", cmd_flags[0]);
+				exit (-1);
 			}
 			
 			i++;
